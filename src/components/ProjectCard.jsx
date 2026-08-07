@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import BeforeAfterSlider from './BeforeAfterSlider.jsx'
-
+import ShareButton from './ShareButton.jsx'
 export default function ProjectCard({ project }) {
   if (!project) return null
 
@@ -21,6 +21,8 @@ export default function ProjectCard({ project }) {
           beforeImage={project.beforeImage}
           afterImage={afterImg}
           altText={project.title || 'Completed painting project'}
+            compact
+
         />
 
         {/* Floating Category Badge */}

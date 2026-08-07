@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import BeforeAfterSlider from '../components/BeforeAfterSlider.jsx'
+import ShareButton from '../components/ShareButton.jsx'
 import apiClient from '../api/client.js'
 
 export default function ProjectDetail() {
@@ -42,17 +43,15 @@ export default function ProjectDetail() {
   if (!project) {
     return (
       <section className="mx-auto max-w-4xl px-6 py-24 text-center font-body text-ink">
-        <h2 className="font-display text-2xl font-normal text-ink">
-          Project Not Found
-        </h2>
+        <h2 className="font-display text-2xl font-normal text-ink">Project not found</h2>
         <p className="mt-2 text-sm text-stone">
           The requested project could not be located or may have been removed.
         </p>
         <Link
           to="/portfolio"
-          className="mt-6 inline-flex items-center space-x-2 font-mono text-xs font-semibold uppercase tracking-wider text-brand hover:underline"
+          className="mt-6 inline-flex items-center font-mono text-xs font-semibold uppercase tracking-widest text-brand hover:underline"
         >
-          <span>← Back to portfolio</span>
+          ← Back to portfolio
         </Link>
       </section>
     )
@@ -61,56 +60,55 @@ export default function ProjectDetail() {
   const formattedDate = project.completedDate
     ? new Date(project.completedDate).toLocaleDateString(undefined, {
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
       })
     : null
 
   return (
     <article className="mx-auto max-w-4xl px-6 py-16 font-body text-ink">
-      {/* Top Breadcrumb & Back Action */}
       <div className="mb-8 flex items-center justify-between">
         <Link
           to="/portfolio"
-          className="font-mono text-xs uppercase tracking-wider text-stone hover:text-ink transition-colors"
+          className="font-mono text-xs uppercase tracking-widest text-stone transition-colors hover:text-ink"
         >
-          ← Back to Portfolio
+          ← Back to portfolio
         </Link>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-amber" />
           <span className="font-mono text-xs font-semibold uppercase tracking-widest text-brand-dark">
-            {project.serviceType || 'Project Showcase'}
+            {project.serviceType || 'Project showcase'}
           </span>
         </div>
       </div>
 
-      {/* Main Title & Metadata */}
-      <h1 className="font-display text-3xl font-normal leading-tight tracking-tight sm:text-4xl">
-        {project.title}
-      </h1>
-
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-stone">
-        {project.location && <span>📍 {project.location}</span>}
-        {project.location && formattedDate && <span>·</span>}
-        {formattedDate && <span>🗓️ Completed {formattedDate}</span>}
+      <div className="flex items-start justify-between gap-6">
+        <h1 className="font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          {project.title}
+        </h1>
+        <ShareButton projectId={project._id} variant="label" />
       </div>
 
-      {/* Interactive Before/After Comparison */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-stone">
+        {project.location && <span>{project.location}</span>}
+        {project.location && formattedDate && <span>·</span>}
+        {formattedDate && <span>Completed {formattedDate}</span>}
+      </div>
+
       <div className="mt-8 rounded-sm border border-line bg-canvas p-2 shadow-sm">
         <BeforeAfterSlider
           beforeImage={project.beforeImage}
           afterImage={project.afterImage || project.images?.[0]}
           altText={project.title}
         />
-        <div className="p-3 text-center font-mono text-[11px] text-stone uppercase tracking-wider">
-          Drag slider horizontally to compare before and after
+        <div className="p-3 text-center font-mono text-[11px] uppercase tracking-widest text-stone">
+          Drag the slider to compare before and after
         </div>
       </div>
 
-      {/* Narrative Description */}
       {project.description && (
         <div className="mt-10 border-t border-line/60 pt-8">
           <h2 className="font-mono text-xs font-semibold uppercase tracking-widest text-stone">
-            Project Overview
+            Project overview
           </h2>
           <p className="mt-3 font-body text-base leading-relaxed text-ink/90 sm:text-lg">
             {project.description}
@@ -118,28 +116,22 @@ export default function ProjectDetail() {
         </div>
       )}
 
-      {/* Video Walkthrough */}
       {project.videoUrl && (
         <div className="mt-12 border-t border-line/60 pt-8">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-amber" />
             <span className="font-mono text-xs font-semibold uppercase tracking-widest text-brand-dark">
-              Walkthrough Video
+              Walkthrough video
             </span>
           </div>
-          <video
-            controls
-            className="mt-4 w-full rounded-sm border border-line bg-ink"
-            src={project.videoUrl}
-          />
+          <video controls className="mt-4 w-full rounded-sm border border-line bg-ink" src={project.videoUrl} />
         </div>
       )}
 
-      {/* Gallery Grid */}
       {project.images?.length > 1 && (
         <div className="mt-12 border-t border-line/60 pt-8">
           <h2 className="font-mono text-xs font-semibold uppercase tracking-widest text-stone">
-            Additional Gallery Views
+            Additional gallery views
           </h2>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
             {project.images.map((img, i) => (
@@ -154,20 +146,14 @@ export default function ProjectDetail() {
         </div>
       )}
 
-      {/* Bottom CTA Banner */}
       <div className="mt-16 rounded-sm border border-line bg-brand-tint/30 p-8 text-center sm:p-10">
-        <h3 className="font-display text-2xl font-normal">
-          Have a similar job in mind?
-        </h3>
-        <p className="mt-2 font-body text-xs text-stone max-w-md mx-auto">
-          Contact our team today to get a free estimate tailored to your project requirements.
+        <h3 className="font-display text-2xl font-normal">Have a similar job in mind?</h3>
+        <p className="mx-auto mt-2 max-w-md font-body text-xs text-stone">
+          Contact our team today to get a free estimate tailored to your project.
         </p>
         <div className="mt-6 flex justify-center gap-4">
-          <Link
-            to="/contact"
-            className="inline-flex items-center justify-center rounded-sm bg-brand px-6 py-3 font-mono text-xs font-medium uppercase tracking-wider text-canvas shadow-sm hover:bg-brand-dark transition-colors"
-          >
-            Request Free Estimate
+          <Link to="/contact" className="btn-primary">
+            Request free estimate
           </Link>
         </div>
       </div>
