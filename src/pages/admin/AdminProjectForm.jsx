@@ -75,20 +75,13 @@ export default function AdminProjectForm() {
       galleryFiles.forEach((f) => data.append('images', f))
       if (videoFile) data.append('video', videoFile)
 
+      // Do NOT set Content-Type manually for FormData — axios/the browser
+      // needs to generate it with the multipart boundary itself. Setting it
+      // manually breaks multer's parsing on the backend and causes a 500.
       if (isEdit) {
-        await apiClient.patch(`/projects/${id}`, data, {
-          headers: {
-            ...authHeader.headers,
-            'Content-Type': 'multipart/form-data',
-          },
-        })
+        await apiClient.patch(`/projects/${id}`, data, authHeader)
       } else {
-        await apiClient.post('/projects', data, {
-          headers: {
-            ...authHeader.headers,
-            'Content-Type': 'multipart/form-data',
-          },
-        })
+        await apiClient.post('/projects', data, authHeader)
       }
       navigate('/admin/dashboard')
     } catch (err) {
