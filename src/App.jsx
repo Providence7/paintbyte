@@ -1,122 +1,100 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect } from 'react'
+import { Route, Routes, useLocation, Link } from 'react-router-dom'
+import Navbar from './components/Navbar.jsx'
+import Footer from './components/Footer.jsx'
+import RequireAdmin from './components/RequireAdmin.jsx'
+import Home from './pages/Home.jsx'
+import Portfolio from './pages/Portfolio.jsx'
+import ProjectDetail from './pages/ProjectDetail.jsx'
+import Contact from './pages/Contact.jsx'
+import AdminLogin from './pages/admin/AdminLogin.jsx'
+import AdminDashboard from './pages/admin/AdminDashboard.jsx'
+import AdminProjectForm from './pages/admin/AdminProjectForm.jsx'
 
-function App() {
-  const [count, setCount] = useState(0)
+// Automatically scrolls window to top on route transitions
+function ScrollToTop() {
+  const { pathname } = useLocation()
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
+
+// 404 Fallback component
+function NotFound() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <section className="mx-auto flex max-w-xl flex-col items-center justify-center px-6 py-24 text-center font-body text-ink">
+      <div className="flex items-center space-x-2">
+        <span className="h-2 w-2 rounded-full bg-amber" />
+        <span className="font-mono text-xs font-semibold uppercase tracking-widest text-brand-dark">
+          404 — Page Not Found
+        </span>
+      </div>
+      <h1 className="mt-4 font-display text-3xl font-normal tracking-tight sm:text-4xl">
+        Looking for a paint job?
+      </h1>
+      <p className="mt-3 font-body text-sm text-stone max-w-sm">
+        The page you are looking for doesn't exist or has been moved. Let's get you back on track.
+      </p>
+      <Link
+        to="/"
+        className="mt-8 inline-flex items-center justify-center rounded-sm bg-brand px-6 py-3 font-mono text-xs font-medium uppercase tracking-wider text-canvas shadow-sm hover:bg-brand-dark transition-colors"
+      >
+        Return to Home Page
+      </Link>
+    </section>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <div className="flex min-h-screen flex-col bg-canvas font-body text-ink">
+      <ScrollToTop />
+      <Navbar />
+
+      <main className="flex-1">
+        <Routes>
+          {/* Public Client Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/portfolio/:id" element={<ProjectDetail />} />
+          <Route path="/contact" element={<Contact />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <RequireAdmin>
+                <AdminDashboard />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/projects/new"
+            element={
+              <RequireAdmin>
+                <AdminProjectForm />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/projects/:id/edit"
+            element={
+              <RequireAdmin>
+                <AdminProjectForm />
+              </RequireAdmin>
+            }
+          />
+
+          {/* Catch-all 404 Route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
