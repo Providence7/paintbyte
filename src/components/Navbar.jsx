@@ -4,7 +4,9 @@ import { Link, NavLink } from 'react-router-dom'
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/portfolio', label: 'Portfolio' },
+    { to: '/studio', label: 'Design a Space' },
   { to: '/contact', label: 'Get an Estimate' },
+
 ]
 
 export default function Navbar() {

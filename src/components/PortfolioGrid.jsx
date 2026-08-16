@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ProjectCard from './ProjectCard.jsx'
+import ShareButton from './ShareButton.jsx'
 
 const FILTERS = ['All', 'Interior', 'Exterior', 'Commercial']
 

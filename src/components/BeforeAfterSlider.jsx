@@ -39,7 +39,7 @@ export default function BeforeAfterSlider({
       try {
         e.currentTarget.releasePointerCapture(e.pointerId)
       } catch (err) {
-        // Pointer capture release safety check
+        // Pointer capture safety check
       }
     }
   }
@@ -54,17 +54,17 @@ export default function BeforeAfterSlider({
   const slider = (
     <div
       ref={containerRef}
-      className={`relative w-full select-none overflow-hidden bg-ink/5 cursor-ew-resize touch-none group ${
+      className={`relative w-full select-none overflow-hidden bg-slate-900 cursor-ew-resize touch-none group shadow-2xl ${
         compact
           ? 'h-full rounded-none border-0'
-          : 'aspect-[4/3] sm:aspect-[16/10] rounded-sm border border-line'
+          : 'aspect-[4/3] sm:aspect-[16/10] rounded-xl border border-line bg-canvas'
       }`}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={stopDragging}
       onPointerCancel={stopDragging}
     >
-      {/* AFTER IMAGE (Base Layer) */}
+      {/* 1. AFTER IMAGE (Base Layer - z-0) */}
       <img
         src={afterImage}
         alt={`${altText} — After`}
@@ -72,9 +72,9 @@ export default function BeforeAfterSlider({
         draggable={false}
       />
 
-      {/* BEFORE IMAGE (Clipped Overlay Layer) */}
+      {/* 2. BEFORE IMAGE (Clipped Overlay Layer - z-10) */}
       <div
-        className="pointer-events-none absolute inset-0 overflow-hidden"
+        className="pointer-events-none absolute inset-0 overflow-hidden z-10"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
       >
         <img
@@ -85,7 +85,32 @@ export default function BeforeAfterSlider({
         />
       </div>
 
-      {/* Interactive Slider Divider Handle */}
+      {/* 3. DYNAMIC LABELS LAYER (z-30 ensures top visibility over all image layers) */}
+      <div className="pointer-events-none absolute inset-x-3 top-3 z-30 flex justify-between items-center">
+        {/* BEFORE BADGE */}
+        <div 
+          className="flex items-center space-x-1.5 rounded-full bg-slate-950/80 backdrop-blur-md px-3 py-1 text-white border border-white/20 shadow-lg transition-all duration-200"
+          style={{ opacity: position < 8 ? 0.15 : 1 }}
+        >
+          <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+          <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-amber-300">
+            Before
+          </span>
+        </div>
+
+        {/* AFTER BADGE */}
+        <div 
+          className="flex items-center space-x-1.5 rounded-full bg-emerald-950/80 backdrop-blur-md px-3 py-1 text-white border border-emerald-500/30 shadow-lg transition-all duration-200"
+          style={{ opacity: position > 92 ? 0.15 : 1 }}
+        >
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-emerald-300">
+            After
+          </span>
+        </div>
+      </div>
+
+      {/* 4. INTERACTIVE SLIDER HANDLE (z-20) */}
       <div
         role="slider"
         tabIndex={0}
@@ -94,24 +119,26 @@ export default function BeforeAfterSlider({
         aria-valuemax={100}
         aria-valuenow={Math.round(position)}
         onKeyDown={onKeyDown}
-        className={`absolute inset-y-0 flex -translate-x-1/2 cursor-ew-resize items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-brand z-20 ${
+        className={`absolute inset-y-0 flex -translate-x-1/2 cursor-ew-resize items-center justify-center focus:outline-none z-20 ${
           compact ? 'w-6' : 'w-10'
         }`}
         style={{ left: `${position}%` }}
       >
         {/* Vertical Line */}
-        <div className="h-full w-0.5 bg-canvas shadow-[0_0_8px_rgba(20,24,26,0.3)] transition-colors group-hover:bg-amber-tint" />
+        <div className="h-full w-0.5 bg-white/90 shadow-[0_0_12px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-colors group-hover:bg-emerald-400" />
 
-        {/* Center Handle Button */}
+        {/* Center Pill Handle */}
         <div
-          className={`absolute flex items-center justify-center rounded-full border border-canvas/40 bg-brand text-canvas shadow-lg transition-transform duration-150 ${
-            compact ? 'h-7 w-7' : 'h-10 w-10'
+          className={`absolute flex items-center justify-center rounded-full border-2 border-white bg-slate-900/90 text-emerald-400 shadow-2xl backdrop-blur-md transition-all duration-150 ${
+            compact ? 'h-8 w-8' : 'h-11 w-11'
           } ${
-            isDragging ? 'scale-110 bg-brand-dark ring-4 ring-brand-tint/50' : 'group-hover:scale-105'
+            isDragging
+              ? 'scale-110 border-emerald-400 bg-slate-950 text-emerald-300 ring-4 ring-emerald-500/30'
+              : 'group-hover:scale-105 group-hover:border-emerald-400'
           }`}
         >
           <svg
-            className={compact ? 'h-3 w-3 text-canvas' : 'h-4 w-4 text-canvas'}
+            className={compact ? 'h-3.5 w-3.5' : 'h-5 w-5'}
             fill="none"
             stroke="currentColor"
             strokeWidth="2.5"
@@ -122,25 +149,10 @@ export default function BeforeAfterSlider({
         </div>
       </div>
 
-      {/* Dynamic Context Labels */}
-      <div className="pointer-events-none absolute left-3 top-3 z-10 flex items-center space-x-1.5 rounded-sm bg-ink/80 backdrop-blur-md px-2 py-0.5 text-canvas shadow-sm border border-white/10">
-        <span className="h-1.5 w-1.5 rounded-full bg-coral animate-pulse" />
-        <span className="font-mono text-[9px] uppercase tracking-widest font-medium">
-          Before
-        </span>
-      </div>
-
-      <div className="pointer-events-none absolute right-3 top-3 z-10 flex items-center space-x-1.5 rounded-sm bg-brand-dark/90 backdrop-blur-md px-2 py-0.5 text-canvas shadow-sm border border-white/10">
-        <span className="h-1.5 w-1.5 rounded-full bg-amber" />
-        <span className="font-mono text-[9px] uppercase tracking-widest font-medium">
-          After
-        </span>
-      </div>
-
-      {/* Interaction Prompt Hint — full mode only, too cramped for cards */}
+      {/* 5. INTERACTION PROMPT FOOTER */}
       {!compact && (
-        <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 z-10 rounded-full bg-canvas/80 backdrop-blur-sm px-3 py-1 text-ink shadow-sm border border-line opacity-80 transition-opacity group-hover:opacity-100">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-stone">
+        <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 z-20 rounded-full bg-slate-950/75 backdrop-blur-md px-3.5 py-1 text-white border border-white/10 shadow-lg opacity-80 transition-opacity group-hover:opacity-100">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-slate-300">
             {isDragging ? `${Math.round(position)}% Revealed` : 'Drag or use arrow keys'}
           </span>
         </div>
@@ -148,19 +160,17 @@ export default function BeforeAfterSlider({
     </div>
   )
 
-  // Compact mode: bare slider only, no editorial chrome — meant to fill a
-  // parent container like ProjectCard's aspect-[4/3] thumbnail slot.
   if (compact) {
     return slider
   }
 
   return (
-    <figure className="mx-auto w-full max-w-4xl rounded-sm bg-canvas p-4 sm:p-8 border border-line shadow-sm font-body text-ink animate-fadeUp">
+    <figure className="mx-auto w-full max-w-4xl rounded-2xl bg-canvas p-5 sm:p-8 border border-line shadow-lg font-body text-ink animate-fadeUp">
       
       {/* Narrative & Adage Header Section */}
-      <header className="mb-6 border-b border-line pb-5">
+      <header className="mb-6 border-b border-line/80 pb-5">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-brand">
+          <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
             {category}
           </span>
           <span className="font-mono text-[10px] uppercase tracking-wider text-stone">
@@ -168,12 +178,12 @@ export default function BeforeAfterSlider({
           </span>
         </div>
 
-        <h3 className="font-display text-2xl sm:text-3xl font-normal tracking-tight text-ink">
+        <h3 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-ink">
           {title}
         </h3>
 
-        <div className="mt-2 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-          <p className="font-display italic text-base text-brand-dark">
+        <div className="mt-2 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+          <p className="font-display italic text-sm sm:text-base text-emerald-600 dark:text-emerald-400">
             &ldquo;{adage}&rdquo;
           </p>
           <p className="font-body text-xs text-stone">
@@ -186,11 +196,18 @@ export default function BeforeAfterSlider({
       {slider}
 
       {/* Footer Meta & Legend */}
-      <footer className="mt-4 flex flex-wrap items-center justify-between text-xs text-stone border-t border-line/60 pt-3">
-        <span className="font-mono text-[11px]">
-          Compare State: <strong className="text-ink">{Math.round(position)}% Before</strong> / <strong className="text-ink">{100 - Math.round(position)}% After</strong>
-        </span>
-        <span className="font-display italic text-stone">
+      <footer className="mt-5 flex flex-wrap items-center justify-between text-xs text-stone border-t border-line/80 pt-4">
+        <div className="font-mono text-[11px] flex items-center space-x-2">
+          <span>State:</span>
+          <span className="rounded bg-line/30 px-2 py-0.5 font-bold text-ink">
+            {Math.round(position)}% Original
+          </span>
+          <span>/</span>
+          <span className="rounded bg-emerald-500/10 px-2 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
+            {100 - Math.round(position)}% Transformed
+          </span>
+        </div>
+        <span className="font-display italic text-stone text-[11px]">
           Crafted with care & precision
         </span>
       </footer>

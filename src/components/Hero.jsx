@@ -15,79 +15,79 @@ export default function Hero({ projectCount }) {
       {/* Background Grid Accent */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#14181A_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.04]" />
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 py-12 md:grid-cols-12 md:py-20 lg:py-24">
+      {/* Reduced Top Padding: pt-4 md:pt-6 */}
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center px-6 pt-4 pb-12 md:pt-6 md:pb-16 md:grid-cols-12 gap-8">
         
-        {/* Left Column — E-Commerce Styled Headline & Value Props */}
+        {/* Left Column — High-Converting Headline & Studio Callouts */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="md:col-span-6 lg:col-span-6 z-10 space-y-6"
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="md:col-span-6 lg:col-span-6 z-10 space-y-4"
         >
-          {/* Studio Distinction Tag */}
-        
+          {/* Interactive Feature Badge */}
+          <div className="inline-flex items-center space-x-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-0.5 text-xs font-mono font-medium text-brand-dark">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+            <span>New: Interactive 3D Paint Studio</span>
+          </div>
 
-          {/* Bold E-Com Style Title */}
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-ink">
-            Craftsmanship in every coat.{' '}
+          {/* Punchy Title */}
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.05] tracking-tight text-ink">
+            Visualize your walls in 3D.{' '}
             <span className="italic font-light text-stone block mt-1">
-              Precision in every detail.
+              Painted to perfection.
             </span>
           </h1>
 
-          {/* Narrative / Value Proposition */}
-          <p className="font-body text-sm italic sm:text-lg text-stone leading-relaxed mx-10 max-w-xl">
-            High-specification surface coatings for residential and commercial spaces. Engineered for durability, finished by hand, and backed by recorded proof.
+          {/* Streamlined Narrative */}
+          <p className="font-body text-base sm:text-lg text-stone leading-relaxed max-w-xl">
+            Test authentic Nigerian paint codes on 3D building models before you buy. Flawless residential and commercial surface finishing.
           </p>
 
-          {/* SPLIT CALL TO ACTION (Dominant Primary + Subdued Secondary Link) */}
-          <div className="pt-2 flex flex-wrap items-center gap-6">
-            {/* Primary Action — Main Button */}
+          {/* CONVERTING ACTION BUTTONS */}
+          <div className="pt-1 flex flex-wrap items-center gap-4">
+            {/* Primary Action — Launch 3D Studio */}
             <Link
-              to="/contact"
-              className="inline-flex items-center justify-center rounded-sm bg-brand px-5 py-3 font-mono text-xs 
-              font-semibold uppercase tracking-wider text-canvas shadow-md transition-all hover:bg-brand-dark hover:shadow-lg 
-              focus:outline-none focus:ring-2 focus:ring-brand"
+              to="/studio"
+              className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 font-mono text-xs 
+              font-bold uppercase tracking-wider text-white shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-700 hover:shadow-xl 
+              focus:outline-none focus:ring-2 focus:ring-emerald-500 transform hover:-translate-y-0.5"
             >
-              <span>Request Consultation</span>
+              <span>🎨 Try 3D Visualizer</span>
               <span className="ml-2 text-base">→</span>
             </Link>
 
-            {/* Secondary Action — Subtle Inline Link (Not a full equal button) */}
+            {/* Secondary Action — Request Quote */}
             <Link
-              to="/portfolio"
-              className="group inline-flex items-center space-x-2 font-mono text-xs font-semibold uppercase tracking-wider text-ink transition-colors hover:text-brand"
+              to="/contact"
+              className="inline-flex items-center justify-center rounded-md border border-line bg-white px-5 py-3 font-mono text-xs 
+              font-semibold uppercase tracking-wider text-ink shadow-sm transition-all hover:bg-canvas-subtle hover:border-ink/20"
             >
-              <span className="border-b border-ink/40 pb-0.5 group-hover:border-brand">
-                Explore Works
-              </span>
-              <span className="text-stone transition-transform duration-200 group-hover:translate-x-1 group-hover:text-brand">
-                ↗
-              </span>
+              Request Quote
             </Link>
           </div>
 
           {/* Live Trust Bar */}
-          <div className="pt-4 border-t border-line/60 flex items-center justify-between font-mono text-xs text-stone">
+          <div className="pt-3 border-t border-line/60 flex items-center justify-between font-mono text-xs text-stone">
             <div className="flex items-center space-x-2">
               <span className="text-amber font-bold">★ 4.9/5</span>
               <span>•</span>
-              <span><strong className="text-ink font-bold">{projectCount || '100+'}</strong> Projects Completed</span>
+              <span><strong className="text-ink font-bold">{projectCount || '100+'}</strong> Projects Painted</span>
             </div>
-            <span className="hidden sm:inline font-semibold text-brand-dark uppercase">Grade A Finish</span>
+            <span className="hidden sm:inline font-semibold text-brand-dark uppercase">Guaranteed Finish</span>
           </div>
         </motion.div>
 
-        {/* Right Column — Bold E-Commerce Showcase Framing */}
-        <div className="md:col-span-6 lg:col-span-6 relative flex items-center justify-center pt-4 md:pt-0">
+        {/* Right Column — Visual Feature Card */}
+        <div className="md:col-span-6 lg:col-span-6 relative flex items-center justify-center">
           
           {/* Glow Backdrop */}
-          <div className="absolute -inset-2 rounded-3xl bg-brand/10 blur-2xl pointer-events-none" />
+          <div className="absolute -inset-2 rounded-3xl bg-emerald-500/10 blur-2xl pointer-events-none" />
 
           {/* Main Visual Display Frame */}
           <div className="relative w-full max-w-lg">
             
-            {/* Primary Hero Photo (Image 1) */}
+            {/* Primary Photo */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -97,39 +97,42 @@ export default function Hero({ projectCount }) {
               <div className="relative aspect-[4/5] sm:aspect-[3/4] w-full overflow-hidden rounded-md bg-ink/5">
                 <img
                   src={image1}
-                  alt="Master craftsman at work"
+                  alt="Master painter applying precision surface coating"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 
-                {/* Contrast Gradient for Typography Readability */}
+                {/* Contrast Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
 
                 {/* Top Floating Badge */}
                 <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                  <span className="inline-flex items-center space-x-1.5 rounded bg-ink/90 backdrop-blur-md px-3 py-1 font-mono text-[10px] uppercase font-bold text-amber border border-white/10 shadow-sm">
-                    <span className="h-1.5 w-1.5 rounded-full bg-amber animate-pulse" />
-                    <span>Active Studio Spec</span>
+                  <span className="inline-flex items-center space-x-1.5 rounded bg-slate-900/90 backdrop-blur-md px-3 py-1 font-mono text-[10px] uppercase font-bold text-emerald-400 border border-white/10 shadow-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>3D Color Matching</span>
                   </span>
                 </div>
 
-                {/* Bottom Image Details */}
+                {/* Bottom Card Copy */}
                 <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-canvas">
                   <div>
-                    <span className="block font-mono text-[10px] uppercase tracking-widest text-brand-tint">
-                      FEATURED APPLICATOR
+                    <span className="block font-mono text-[10px] uppercase tracking-widest text-emerald-300">
+                      VIRTUAL STUDIO READY
                     </span>
                     <p className="font-display text-lg sm:text-xl font-medium tracking-wide">
-                      Master Surface Finish
+                      Instant Color Previews
                     </p>
                   </div>
-                  <span className="font-mono text-xs font-bold text-amber">
-                    VOL. 2026
-                  </span>
+                  <Link 
+                    to="/studio"
+                    className="font-mono text-xs font-bold text-amber hover:underline"
+                  >
+                    TEST SHADES ↗
+                  </Link>
                 </div>
               </div>
             </motion.div>
 
-            {/* Secondary Overlapping E-Com Feature Card (Image 2) */}
+            {/* Overlapping Spec Badge */}
             <motion.div
               initial={{ opacity: 0, y: 30, x: 20 }}
               animate={{ opacity: 1, y: 0, x: 0 }}
@@ -139,22 +142,22 @@ export default function Hero({ projectCount }) {
               <div className="relative aspect-[16/10] w-full overflow-hidden rounded-md bg-ink/5">
                 <img
                   src={image2}
-                  alt="Surface preparation materials"
+                  alt="Surface preparation materials and finish palette"
                   className="h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-ink/20" />
                 
                 <div className="absolute top-2 left-2">
-                  <span className="rounded bg-brand px-1.5 py-0.5 font-mono text-[8px] uppercase font-bold text-canvas">
-                    Substrate
+                  <span className="rounded bg-emerald-600 px-1.5 py-0.5 font-mono text-[8px] uppercase font-bold text-white">
+                    Nigeria Codes
                   </span>
                 </div>
               </div>
 
               {/* Product Spec Micro Label */}
               <div className="mt-2 px-1 flex items-center justify-between font-mono text-[10px] text-stone">
-                <span className="font-semibold text-ink uppercase">Prep Standard</span>
-                <span className="text-brand font-bold">100% Quality</span>
+                <span className="font-semibold text-ink uppercase">Paint Specs</span>
+                <span className="text-emerald-600 font-bold">100% Match</span>
               </div>
             </motion.div>
 
