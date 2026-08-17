@@ -14,7 +14,7 @@ import AdminProjectForm from './pages/admin/AdminProjectForm.jsx'
 import DesignStudio3D from './components/DesignStudio.jsx'
 
 // WhatsApp Floating CTA Button Component
-function WhatsAppCTA({ phoneNumber = "2348000000000", defaultMessage = "Hi! I would like to make an inquiry about a painting project." }) {
+function WhatsAppCTA({ phoneNumber = "2348065704348", defaultMessage = "Hi! I would like to make an inquiry about a painting project." }) {
   const location = useLocation()
   
   // Hide CTA button on admin routes
