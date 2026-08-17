@@ -134,7 +134,7 @@ export default function App() {
       <Footer />
 
       {/* Floating WhatsApp CTA */}
-      <WhatsAppCTA phoneNumber="2348000000000" />
+      <WhatsAppCTA phoneNumber="2348065704348" />
     </div>
   )
 }
