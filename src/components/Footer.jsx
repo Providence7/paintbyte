@@ -52,6 +52,10 @@ export default function Footer() {
             </span>
             <ul className="space-y-2.5 font-body text-sm text-canvas/80">
               <li>
+                <Link to="/studio" className="inline-flex items-center space-x-1.5 transition-colors hover:text-brand-tint">
+                  <span>Design your space </span>
+                  <span className="text-xs opacity-50">↗</span>
+                </Link>
                 <Link to="/portfolio" className="inline-flex items-center space-x-1.5 transition-colors hover:text-brand-tint">
                   <span>Portfolio</span>
                   <span className="text-xs opacity-50">↗</span>
@@ -81,8 +85,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-2.5">
                 <span className="text-brand-tint" role="img" aria-label="Phone">📞</span>
-                <a href="tel:+2340000000000" className="hover:text-canvas transition-colors">
-                  +234 000 000 0000
+                <a href="tel:+2348065704348" className="hover:text-canvas transition-colors">
+                  +234 8065704348
                 </a>
               </li>
               <li className="pt-2 font-mono text-xs text-canvas/50 flex items-center space-x-2">
