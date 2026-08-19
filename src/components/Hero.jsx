@@ -26,24 +26,18 @@ export default function Hero({ projectCount }) {
           className="md:col-span-6 lg:col-span-6 z-10 space-y-4"
         >
           {/* Interactive Feature Badge */}
-          <div className="inline-flex items-center space-x-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-0.5 text-xs font-mono font-medium text-brand-dark">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-            <span>New: Interactive 3D Paint Studio</span>
-          </div>
+      {/* Title */}
+<h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.05] tracking-tight text-ink">
+  Transforming walls with{' '}
+  <span className="italic font-light text-stone block mt-1">
+    unmatched precision.
+  </span>
+</h1>
 
-          {/* Punchy Title */}
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.05] tracking-tight text-ink">
-            Visualize your walls in 3D.{' '}
-            <span className="italic font-light text-stone block mt-1">
-              Painted to perfection.
-            </span>
-          </h1>
-
-          {/* Streamlined Narrative */}
-          <p className="font-body text-base sm:text-lg text-stone leading-relaxed max-w-xl">
-            Test authentic Nigerian paint codes on 3D building models before you buy. Flawless residential and commercial surface finishing.
-          </p>
-
+{/* Narrative */}
+<p className="font-body text-base sm:text-lg text-stone leading-relaxed max-w-xl">
+  High-quality paint, seamless execution, and zero mess. We give your home or office the flawless, professional look it deserves.
+</p>
           {/* CONVERTING ACTION BUTTONS */}
           <div className="pt-1 flex flex-wrap items-center gap-4">
             {/* Primary Action — Launch 3D Studio */}
@@ -53,7 +47,7 @@ export default function Hero({ projectCount }) {
               font-bold uppercase tracking-wider text-white shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-700 hover:shadow-xl 
               focus:outline-none focus:ring-2 focus:ring-emerald-500 transform hover:-translate-y-0.5"
             >
-              <span>🎨 Try 3D Visualizer</span>
+              <span>🎨 Design A space </span>
               <span className="ml-2 text-base">→</span>
             </Link>
 

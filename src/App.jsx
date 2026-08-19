@@ -13,6 +13,39 @@ import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import AdminProjectForm from './pages/admin/AdminProjectForm.jsx'
 import DesignStudio3D from './components/DesignStudio.jsx'
 
+// Portfolio Floating CTA Button Component
+function PortfolioCTA() {
+  const location = useLocation()
+
+  // Hide button on admin routes or if the user is already on the portfolio page
+  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/portfolio')) {
+    return null
+  }
+
+  return (
+    <Link
+      to="/portfolio"
+      aria-label="View Portfolio"
+      className="flex items-center space-x-2 rounded-full bg-brand px-4 py-3 text-canvas shadow-xl hover:bg-brand-dark transition-all transform hover:scale-105 active:scale-95"
+    >
+      <svg
+        className="h-6 w-6 stroke-current fill-none"
+        viewBox="0 0 24 24"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+      </svg>
+      <span className="hidden font-mono text-xs font-bold uppercase tracking-wider md:inline-block">
+        View Portfolio
+      </span>
+    </Link>
+  )
+}
+
 // WhatsApp Floating CTA Button Component
 function WhatsAppCTA({ phoneNumber = "2348065704348", defaultMessage = "Hi! I would like to make an inquiry about a painting project." }) {
   const location = useLocation()
@@ -31,7 +64,7 @@ function WhatsAppCTA({ phoneNumber = "2348065704348", defaultMessage = "Hi! I wo
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className="fixed bottom-6 right-6 z-50 flex items-center space-x-2 rounded-full bg-[#25D366] px-4 py-3 text-white shadow-xl hover:bg-[#20ba5a] transition-all transform hover:scale-105 active:scale-95"
+      className="flex items-center space-x-2 rounded-full bg-[#25D366] px-4 py-3 text-white shadow-xl hover:bg-[#20ba5a] transition-all transform hover:scale-105 active:scale-95"
     >
       <svg
         className="h-6 w-6 fill-current"
@@ -133,8 +166,11 @@ export default function App() {
 
       <Footer />
 
-      {/* Floating WhatsApp CTA */}
-      <WhatsAppCTA phoneNumber="2348065704348" />
+      {/* Floating Action Buttons Container */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-3">
+        <PortfolioCTA />
+        <WhatsAppCTA phoneNumber="2348065704348" />
+      </div>
     </div>
   )
 }
