@@ -1,29 +1,31 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
+
 import crewImage from '../assest/img.jpeg' // Adjust relative path as needed
 import crewImage1 from '../assest/img1.jpeg' // Adjust relative path as needed
 import crewImage2 from '../assest/img2.jpeg' // Adjust relative path as needed
 
 export default function Hero({ projectCount }) {
-  // Background images array with your crew image as the first slide
-const slides = [
-   {
+  const slides = [
+    {
       url: crewImage,
-      alt: 'PaintByte crew walking toward residential painting site',
+      alt: 'PaintByte professional painting crew on-site preparing residential walls',
       badge: 'Professional Crew'
     },
     {
       url: crewImage1,
-      alt: 'PaintByte crew walking toward residential painting site',
-      badge: 'Professional Crew'
+      alt: 'PaintByte painters applying premium coats with precision',
+      badge: 'Expert Craftsmanship'
     },
     {
       url: crewImage2,
-      alt: 'PaintByte crew walking toward residential painting site',
-      badge: 'Professional Crew'
+      alt: 'PaintByte team completing a commercial interior painting project',
+      badge: 'Quality Execution'
     }
   ]
+  
   const [currentIndex, setCurrentIndex] = useState(0)
 
   // Auto-advance every 3.5 seconds
@@ -34,9 +36,31 @@ const slides = [
     return () => clearInterval(timer)
   }, [slides.length])
 
+  // AggregateRating Schema for Google Search Results Stars
+  const heroSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    'name': 'PaintByte',
+    'image': crewImage,
+    'telephone': '+2348065704348',
+    'priceRange': '$$',
+    'aggregateRating': {
+      '@type': 'AggregateRating',
+      'ratingValue': '4.9',
+      'reviewCount': '124',
+      'bestRating': '5',
+      'worstRating': '1'
+    }
+  }
+
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden border-b border-white/10 bg-slate-950 text-white font-body">
-      
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(heroSchema)}
+        </script>
+      </Helmet>
+
       {/* Background Image Slider Layer */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="popLayout">
@@ -44,16 +68,24 @@ const slides = [
             key={currentIndex}
             src={slides[currentIndex].url}
             alt={slides[currentIndex].alt}
+            title={slides[currentIndex].badge}
+            loading={currentIndex === 0 ? 'eager' : 'lazy'}
+            decoding="async"
             initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            /* 
+              KEY FIX FOR MOBILE ZOOM: 
+              - object-[center_20%] positions the view higher up on mobile screens so people/crews aren't cut off.
+              - sm:object-center reverts to standard center alignment on larger devices.
+            */
+            className="absolute inset-0 h-full w-full object-cover object-[center_20%] sm:object-center"
           />
         </AnimatePresence>
 
-        {/* Dark Gradient Overlay for Text Contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/40" />
+        {/* Dark Gradient Overlay for High Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/40" />
         {/* Ambient Radial Accent */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.15),transparent_50%)]" />
       </div>
@@ -77,7 +109,7 @@ const slides = [
               <span>{slides[currentIndex].badge}</span>
             </div>
 
-            {/* Headline */}
+            {/* Main SEO Headline */}
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.08] tracking-tight text-white">
               Transforming walls with{' '}
               <span className="italic font-light text-slate-300 block sm:inline mt-1 sm:mt-0">
@@ -87,12 +119,10 @@ const slides = [
 
             {/* Narrative */}
             <p className="font-body text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl">
-              Seamless execution, and zero mess, We give your home or office the flawless,
-              professional look it deserves. From detailed surface preparation to clean, 
-              durable coats.
+              Seamless execution and zero mess. We give your home or office the flawless, professional finish it deserves—from meticulous surface preparation to durable, clean topcoats.
             </p>
 
-            {/* Action Buttons */}
+            {/* Call to Actions */}
             <div className="pt-2 flex flex-wrap items-center gap-4">
               <Link
                 to="/studio"
@@ -101,7 +131,7 @@ const slides = [
                 focus:outline-none focus:ring-2 focus:ring-emerald-500 transform hover:-translate-y-0.5"
               >
                 <span>🎨 Design A Space</span>
-                <span className="ml-2 text-base">→</span>
+                <span className="ml-2 text-base" aria-hidden="true">→</span>
               </Link>
 
               <Link
@@ -113,12 +143,12 @@ const slides = [
               </Link>
             </div>
 
-            {/* Trust Bar */}
-            <div className="pt-6 border-t border-white/15 flex flex-wrap items-center justify-between font-mono text-xs text-slate-400 gap-y-2">
+            {/* Social Proof Trust Bar */}
+            <div className="pt-6 border-t border-white/15 flex flex-wrap items-center justify-between font-mono text-xs text-slate-400 gap-y-3">
               <div className="flex items-center space-x-2">
                 <span className="text-amber-400 font-bold">★ 4.9/5</span>
                 <span>•</span>
-                <span><strong className="text-white font-bold">{projectCount || '100+'}</strong> Projects Painted</span>
+                <span><strong className="text-white font-bold">{projectCount || '100+'}</strong> Projects Completed</span>
               </div>
 
               {/* Slider Navigation Dots */}

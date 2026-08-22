@@ -37,7 +37,7 @@ export default function ContactForm() {
         newVideo = file // only one video allowed — replaces any previous pick
       } else if (file.type.startsWith('image/')) {
         if (newImages.length < MAX_IMAGES) {
-          newImages.push(file)
+          newImages = [...newImages, file]
         } else {
           error = `You can attach up to ${MAX_IMAGES} photos.`
         }
@@ -68,8 +68,6 @@ export default function ContactForm() {
       attachments.images.forEach((file) => data.append('images', file))
       if (attachments.video) data.append('video', attachments.video)
 
-      // Don't set a Content-Type header manually — the browser/axios needs
-      // to generate the multipart boundary itself for FormData to work.
       await apiClient.post('/messages', data)
 
       setStatus('sent')
@@ -83,10 +81,13 @@ export default function ContactForm() {
 
   if (status === 'sent') {
     return (
-      <div className="mx-auto w-full max-w-2xl rounded-sm border border-brand/30 bg-brand-tint/60 p-8 sm:p-12 text-ink shadow-sm animate-fadeUp">
+      <section 
+        aria-labelledby="success-heading" 
+        className="mx-auto w-full max-w-2xl rounded-sm border border-brand/30 bg-brand-tint/60 p-8 sm:p-12 text-ink shadow-sm animate-fadeUp"
+      >
         <div className="flex items-center space-x-3 mb-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-canvas shadow-sm">
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -95,7 +96,7 @@ export default function ContactForm() {
           </span>
         </div>
 
-        <h3 className="font-display text-3xl font-normal text-brand-dark">
+        <h3 id="success-heading" className="font-display text-3xl font-normal text-brand-dark">
           Message successfully sent.
         </h3>
 
@@ -111,14 +112,18 @@ export default function ContactForm() {
           <span>REF: EST-{Math.floor(1000 + Math.random() * 9000)}</span>
           <span>STUDIO HOURS: 08:00 – 18:00 EST</span>
         </div>
-      </div>
+      </section>
     )
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl rounded-sm border border-line bg-canvas p-6 sm:p-10 shadow-sm font-body text-ink animate-fadeUp">
-
-      {/* Editorial Adage Header */}
+    <section 
+      aria-labelledby="contact-heading"
+      className="mx-auto w-full max-w-2xl rounded-sm border border-line bg-canvas p-6 sm:p-10 shadow-sm font-body text-ink animate-fadeUp"
+      itemScope 
+      itemType="https://schema.org/ContactPage"
+    >
+      {/* Editorial Adage Header with Keyword Rich Structure */}
       <header className="mb-8 border-b border-line pb-6">
         <div className="flex items-center justify-between gap-2 mb-2">
           <span className="font-mono text-[10px] uppercase tracking-wider text-stone">
@@ -126,29 +131,31 @@ export default function ContactForm() {
           </span>
         </div>
 
-        <h2 className="font-display text-2xl sm:text-3xl font-normal tracking-tight text-ink">
+        <h1 id="contact-heading" className="font-display text-2xl sm:text-3xl font-normal tracking-tight text-ink" itemProp="name">
           Start the Conversation
-        </h2>
+        </h1>
 
         <p className="mt-2 font-display italic text-base text-brand-dark">
           &ldquo;A pen is mightier than a sword.&rdquo;
         </p>
-        <p className="mt-1 font-body text-xs text-stone">
-          Tell us about your space, timing, and vision—we respond to inquiries within 24 hours.
+        <p className="mt-1 font-body text-xs text-stone" id="form-subtitle">
+          Tell us about your space, timing, and vision—we respond to interior & architectural inquiries within 24 hours.
         </p>
       </header>
 
-      {/* Form Area */}
-      <form onSubmit={onSubmit} className="space-y-6">
+      {/* Form Area with ARIA context */}
+      <form onSubmit={onSubmit} className="space-y-6" aria-describedby="form-subtitle">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <label htmlFor="name" className="block font-mono text-xs uppercase tracking-widest text-stone">
-              Name <span className="text-coral">*</span>
+              Name <span className="text-coral" aria-hidden="true">*</span>
             </label>
             <input
               id="name"
               name="name"
+              type="text"
               required
+              aria-required="true"
               value={form.name}
               onChange={onChange}
               placeholder="e.g. Eleanor Vance"
@@ -163,6 +170,7 @@ export default function ContactForm() {
             <input
               id="phone"
               name="phone"
+              type="tel"
               value={form.phone}
               onChange={onChange}
               placeholder="+234 000 000 0000"
@@ -173,13 +181,14 @@ export default function ContactForm() {
 
         <div>
           <label htmlFor="email" className="block font-mono text-xs uppercase tracking-widest text-stone">
-            Email <span className="text-coral">*</span>
+            Email <span className="text-coral" aria-hidden="true">*</span>
           </label>
           <input
             id="email"
             name="email"
             type="email"
             required
+            aria-required="true"
             value={form.email}
             onChange={onChange}
             placeholder="eleanor@gmail.com"
@@ -204,7 +213,7 @@ export default function ContactForm() {
               <option value="Commercial" className="bg-canvas text-ink">Commercial Property</option>
               <option value="Color consultation" className="bg-canvas text-ink">Color & Material Consultation</option>
             </select>
-            <div className="pointer-events-none absolute right-2 bottom-3 text-stone">
+            <div className="pointer-events-none absolute right-2 bottom-3 text-stone" aria-hidden="true">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -214,13 +223,14 @@ export default function ContactForm() {
 
         <div>
           <label htmlFor="message" className="block font-mono text-xs uppercase tracking-widest text-stone">
-            Tell us about the space <span className="text-coral">*</span>
+            Tell us about the space <span className="text-coral" aria-hidden="true">*</span>
           </label>
           <textarea
             id="message"
             name="message"
             rows={4}
             required
+            aria-required="true"
             value={form.message}
             onChange={onChange}
             placeholder="Dimensions, current condition, architectural era, desired timeline..."
@@ -239,7 +249,7 @@ export default function ContactForm() {
             className="mt-2 flex cursor-pointer items-center justify-center rounded-sm border border-dashed border-line bg-brand-tint/20 px-4 py-6 text-center transition-colors hover:border-brand hover:bg-brand-tint/40"
           >
             <div className="flex flex-col items-center space-y-1">
-              <svg className="h-5 w-5 text-brand-dark" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 text-brand-dark" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M12 12v9m0-9l-3 3m3-3l3 3" />
               </svg>
               <span className="font-body text-xs text-stone">
@@ -258,11 +268,11 @@ export default function ContactForm() {
           </label>
 
           {attachmentError && (
-            <p className="mt-2 font-body text-xs text-coral-dark">{attachmentError}</p>
+            <p className="mt-2 font-body text-xs text-coral-dark" role="alert">{attachmentError}</p>
           )}
 
           {(attachments.images.length > 0 || attachments.video) && (
-            <ul className="mt-3 space-y-1.5">
+            <ul className="mt-3 space-y-1.5" aria-label="Attached files">
               {attachments.images.map((file, index) => (
                 <li
                   key={`${file.name}-${index}`}
@@ -273,6 +283,7 @@ export default function ContactForm() {
                     type="button"
                     onClick={() => removeImage(index)}
                     className="ml-3 flex-shrink-0 font-mono text-[10px] uppercase text-coral-dark hover:underline"
+                    aria-label={`Remove image ${file.name}`}
                   >
                     Remove
                   </button>
@@ -285,6 +296,7 @@ export default function ContactForm() {
                     type="button"
                     onClick={removeVideo}
                     className="ml-3 flex-shrink-0 font-mono text-[10px] uppercase text-coral-dark hover:underline"
+                    aria-label={`Remove video ${attachments.video.name}`}
                   >
                     Remove
                   </button>
@@ -295,8 +307,8 @@ export default function ContactForm() {
         </div>
 
         {status === 'error' && (
-          <div className="rounded-sm border border-coral/30 bg-coral-tint p-3 font-body text-xs text-coral-dark flex items-center space-x-2">
-            <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="rounded-sm border border-coral/30 bg-coral-tint p-3 font-body text-xs text-coral-dark flex items-center space-x-2" role="alert">
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span>Something went wrong sending your message. Please try again, or call us directly.</span>
@@ -311,7 +323,7 @@ export default function ContactForm() {
           >
             {status === 'sending' ? (
               <span className="flex items-center space-x-2">
-                <svg className="h-3.5 w-3.5 animate-spin text-canvas" fill="none" viewBox="0 0 24 24">
+                <svg className="h-3.5 w-3.5 animate-spin text-canvas" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
@@ -321,10 +333,8 @@ export default function ContactForm() {
               <span>Send Message</span>
             )}
           </button>
-
-       
         </div>
       </form>
-    </div>
+    </section>
   )
 }

@@ -1,9 +1,13 @@
-# Allow all search engine crawlers to index the site
+# Allow all standard search engine crawlers
 User-agent: *
 Allow: /
+Disallow: /admin/
 
-# Direct AI web crawlers (ChatGPT, Perplexity, Claude, Gemini)
+# Explicitly allow AI discovery agents & LLM search crawlers
 User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
 Allow: /
 
 User-agent: PerplexityBot
@@ -12,12 +16,11 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
+User-agent: Claude-Web
+Allow: /
+
 User-agent: Google-Extended
 Allow: /
 
-# Prevent search engines from indexing private admin routes
-Disallow: /admin/
-Disallow: /admin/*
-
-# Path to your XML Sitemap
+# Sitemap Location
 Sitemap: https://www.paintbyte.com.ng/sitemap.xml

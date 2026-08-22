@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/portfolio', label: 'Portfolio' },
-    { to: '/studio', label: 'Design a Space' },
+  { to: '/studio', label: 'Design a Space' },
   { to: '/contact', label: 'Get an Estimate' },
-
 ]
 
 export default function Navbar() {
@@ -19,8 +19,26 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Navigation Schema for Sitelinks Generation
+  const navSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'itemListElement': NAV_LINKS.map((link, index) => ({
+      '@type': 'SiteNavigationElement',
+      'position': index + 1,
+      'name': link.label,
+      'url': `https://paintbyte.com${link.to}`
+    }))
+  }
+
   return (
     <>
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(navSchema)}
+        </script>
+      </Helmet>
+
       {/* Top Heritage Ribbon / Announcement Bar */}
       <div className="bg-ink text-canvas py-1.5 px-6 border-b border-canvas/10 text-[11px] font-mono tracking-wider uppercase hidden sm:block">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
@@ -44,10 +62,12 @@ export default function Navbar() {
             : 'bg-canvas/40 backdrop-blur-sm border-b border-line/40 py-5'
         }`}
       >
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-6">
-          
+        <nav 
+          aria-label="Main Navigation" 
+          className="mx-auto flex max-w-6xl items-center justify-between px-6"
+        >
           {/* Brand Logo & Monogram */}
-          <Link to="/" className="group flex items-center space-x-3 focus:outline-none">
+          <Link to="/" className="group flex items-center space-x-3 focus:outline-none" aria-label="PaintByte Home">
             <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-ink text-canvas font-display text-sm font-semibold transition-transform duration-300 group-hover:scale-105 group-hover:bg-brand">
               PB
             </div>
@@ -63,7 +83,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation Links */}
           <div className="hidden items-center space-x-8 md:flex">
-            {NAV_LINKS.map((link, index) => {
+            {NAV_LINKS.map((link) => {
               const isEstimate = link.to === '/contact'
 
               if (isEstimate) {
@@ -74,7 +94,7 @@ export default function Navbar() {
                     className="inline-flex items-center justify-center rounded-sm bg-brand px-5 py-2.5 font-mono text-xs font-medium uppercase tracking-wider text-canvas shadow-sm transition-all hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 active:scale-95"
                   >
                     <span>{link.label}</span>
-                    <span className="ml-1.5 text-xs text-amber-tint">→</span>
+                    <span className="ml-1.5 text-xs text-amber-tint" aria-hidden="true">→</span>
                   </NavLink>
                 )
               }
@@ -92,7 +112,7 @@ export default function Navbar() {
                   {({ isActive }) => (
                     <>
                       <span>{link.label}</span>
-                      {/* Hover / Active Bottom Rule Line */}
+                      {/* Active Indicator Line */}
                       <span
                         className={`absolute inset-x-0 bottom-0 h-0.5 bg-brand transition-all duration-300 ${
                           isActive ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-50'
@@ -108,7 +128,8 @@ export default function Navbar() {
           {/* Mobile Animated Hamburger Button */}
           <button
             className="flex h-10 w-10 items-center justify-center rounded-sm border border-line bg-canvas p-2 transition-colors hover:border-ink md:hidden focus:outline-none"
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-label={open ? 'Close main menu' : 'Open main menu'}
+            aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
           >
             <div className="relative flex h-3.5 w-5 flex-col justify-between">
@@ -150,14 +171,14 @@ export default function Navbar() {
                     <span className="font-mono text-xs text-stone">0{index + 1}</span>
                     <span>{link.label}</span>
                   </div>
-                  <span className="font-mono text-xs text-stone">↗</span>
+                  <span className="font-mono text-xs text-stone" aria-hidden="true">↗</span>
                 </NavLink>
               ))}
             </div>
 
             {/* Mobile Footer Stamp */}
             <div className="mt-8 pt-4 border-t border-line flex items-center justify-between font-mono text-[10px] uppercase text-stone">
-              <span>Paintbyte Atelier</span>
+              <span>PaintByte Atelier</span>
               <span>Refined Finishes</span>
             </div>
           </div>

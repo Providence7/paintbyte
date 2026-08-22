@@ -1,20 +1,20 @@
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Helmet } from 'react-helmet-async'
 import ProjectCard from './ProjectCard.jsx'
-import ShareButton from './ShareButton.jsx'
 
 const FILTERS = ['All', 'Interior', 'Exterior', 'Commercial']
 
 export default function PortfolioGrid({ projects = [] }) {
   const [filter, setFilter] = useState('All')
 
-  // Filter logic preserved exactly as provided
+  // Filter logic preserved exactly
   const filtered = useMemo(() => {
     if (filter === 'All') return projects
     return projects.filter((p) => p.serviceType === filter)
   }, [projects, filter])
 
-  // Count projects per category to show clear numbers to clients
+  // Count projects per category
   const counts = useMemo(() => {
     const map = { All: projects.length }
     FILTERS.forEach((f) => {
@@ -25,10 +25,30 @@ export default function PortfolioGrid({ projects = [] }) {
     return map
   }, [projects])
 
+  // Dynamic Schema markup for gallery images
+  const gallerySchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ImageGallery',
+    'name': `PaintByte ${filter} Painting Portfolio`,
+    'description': `A collection of completed professional ${filter.toLowerCase()} painting projects.`,
+    'hasPart': filtered.map((project) => ({
+      '@type': 'CreativeWork',
+      'name': project.title || 'PaintByte Painting Project',
+      'image': project.imageUrl || project.image,
+      'description': project.description || `Professional ${project.serviceType} painting finish`
+    }))
+  }
+
   return (
     <div className="w-full">
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(gallerySchema)}
+        </script>
+      </Helmet>
+
       {/* Category Filter Controls */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-line pb-4">
+      <nav aria-label="Portfolio filters" className="flex flex-wrap items-center gap-2 border-b border-line pb-4">
         {FILTERS.map((f) => {
           const isActive = filter === f
           const count = counts[f] ?? 0
@@ -37,6 +57,7 @@ export default function PortfolioGrid({ projects = [] }) {
             <button
               key={f}
               onClick={() => setFilter(f)}
+              aria-pressed={isActive}
               className={`relative inline-flex items-center gap-2 rounded-sm border px-4 py-2 font-mono text-xs uppercase tracking-wider transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 ${
                 isActive
                   ? 'border-brand bg-brand text-canvas font-medium shadow-sm'
@@ -54,7 +75,7 @@ export default function PortfolioGrid({ projects = [] }) {
             </button>
           )
         })}
-      </div>
+      </nav>
 
       {/* Grid Display or Friendly Empty State */}
       <AnimatePresence mode="wait">
@@ -66,7 +87,7 @@ export default function PortfolioGrid({ projects = [] }) {
             exit={{ opacity: 0, y: -10 }}
             className="my-16 flex flex-col items-center justify-center rounded-sm border border-dashed border-line bg-canvas/50 px-6 py-12 text-center"
           >
-            <div className="mb-3 h-10 w-10 rounded-full bg-line/40 flex items-center justify-center text-stone">
+            <div className="mb-3 h-10 w-10 rounded-full bg-line/40 flex items-center justify-center text-stone" aria-hidden="true">
               🎨
             </div>
             <p className="font-display text-lg font-normal text-ink">

@@ -54,36 +54,44 @@ export default function Portfolio() {
   }, [projects, selectedCategory])
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20 font-body text-ink">
-      
+    <section 
+      aria-labelledby="portfolio-page-heading"
+      className="mx-auto max-w-6xl px-6 py-16 sm:py-20 font-body text-ink"
+      itemScope
+      itemType="https://schema.org/CollectionPage"
+    >
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="h-2 w-2 rounded-full bg-amber" />
+            <span className="h-2 w-2 rounded-full bg-amber" aria-hidden="true" />
             <span className="font-mono text-xs font-semibold uppercase tracking-widest text-brand-dark">
-               Portfolio
+              Portfolio
             </span>
           </div>
-          <h1 className="mt-3 max-w-lg font-display text-3xl font-normal leading-tight tracking-tight sm:text-4xl">
+          <h1 id="portfolio-page-heading" className="mt-3 max-w-lg font-display text-3xl font-normal leading-tight tracking-tight sm:text-4xl" itemProp="name">
             Every job we've finished
           </h1>
-          <p className="mt-3 max-w-lg font-body text-sm leading-relaxed text-stone">
+          <p className="mt-3 max-w-lg font-body text-sm leading-relaxed text-stone" itemProp="description">
             Filter by service type, then drag any comparison slider to see the actual
-            before and after transformation.
+            before and after transformation across residential and commercial painting projects.
           </p>
         </div>
 
-        {/* Dynamic Category Filter Tabs */}
+        {/* Dynamic Category Filter Tabs with ARIA accessibility */}
         {!loading && projects.length > 0 && (
-          <div className="flex flex-wrap gap-2 border-b border-line pb-2">
+          <nav aria-label="Portfolio category filter" className="flex flex-wrap gap-2 border-b border-line pb-2" role="tablist">
             {categories.map((cat) => {
               const isActive = selectedCategory === cat
               return (
                 <button
                   key={cat}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls="portfolio-grid-container"
+                  id={`tab-${cat.toLowerCase().replace(/\s+/g, '-')}`}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors rounded-sm ${
+                  className={`px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors rounded-sm focus:outline-none focus:ring-2 focus:ring-brand/40 ${
                     isActive
                       ? 'bg-brand text-canvas font-medium'
                       : 'bg-canvas text-stone hover:text-ink hover:bg-brand-tint/40'
@@ -93,14 +101,19 @@ export default function Portfolio() {
                 </button>
               )
             })}
-          </div>
+          </nav>
         )}
       </div>
 
       {/* Portfolio Grid or Skeleton Loading State */}
-      <div className="mt-12">
+      <div 
+        id="portfolio-grid-container" 
+        role="tabpanel" 
+        aria-labelledby={`tab-${selectedCategory.toLowerCase().replace(/\s+/g, '-')}`}
+        className="mt-12"
+      >
         {loading ? (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2" aria-busy="true" aria-label="Loading projects">
             {[1, 2, 3, 4].map((n) => (
               <div
                 key={n}
@@ -111,7 +124,7 @@ export default function Portfolio() {
         ) : filteredProjects.length > 0 ? (
           <PortfolioGrid projects={filteredProjects} />
         ) : (
-          <div className="py-16 text-center border border-dashed border-line rounded-sm bg-canvas">
+          <div className="py-16 text-center border border-dashed border-line rounded-sm bg-canvas" role="status">
             <p className="font-display text-base text-ink">
               No projects found in this category
             </p>

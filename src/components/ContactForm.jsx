@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import apiClient from '../api/client.js'
 
 const initialForm = {
@@ -11,7 +12,7 @@ const initialForm = {
 
 export default function ContactForm() {
   const [form, setForm] = useState(initialForm)
-  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [status, setStatus] = useState('idle')
 
   const onChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
@@ -29,9 +30,29 @@ export default function ContactForm() {
     }
   }
 
+  const contactSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    'name': 'PaintByte Contact & Estimate Request',
+    'description': 'Request an estimate or submit a formal RFP/tender for residential, commercial, and government painting projects.',
+    'mainEntity': {
+      '@type': 'ContactPoint',
+      'telephone': '+2348065704348',
+      'contactType': 'customer service',
+      'areaServed': ['NG'],
+      'availableLanguage': ['English']
+    }
+  }
+
   if (status === 'sent') {
     return (
       <div className="mx-auto w-full max-w-2xl rounded-sm border border-brand/30 bg-brand-tint/60 p-8 sm:p-12 text-ink shadow-sm animate-fadeUp">
+        <Helmet>
+          <title>Estimate Request Received | PaintByte</title>
+          <script type="application/ld+json">
+            {JSON.stringify(contactSchema)}
+          </script>
+        </Helmet>
         <div className="flex items-center space-x-3 mb-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-canvas shadow-sm">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -44,20 +65,20 @@ export default function ContactForm() {
         </div>
 
         <h3 className="font-display text-3xl font-normal text-brand-dark">
-          Message successfully sent.
+          Estimate or Inquiry Submitted Successfully.
         </h3>
 
         <blockquote className="mt-4 border-l-2 border-brand/40 pl-4 font-display italic text-stone">
-          &ldquo;A pen is mightier than a sword.&rdquo;
+          &ldquo;Precision in communication leads to perfection in execution.&rdquo;
         </blockquote>
 
         <p className="mt-4 font-body text-sm text-stone leading-relaxed">
-          Thank you for reaching out. We review every architectural & interior query carefully and reply to most estimate requests within one business day.
+          Thank you for reaching out to PaintByte. Whether for residential projects, commercial spaces, or formal tender submissions, our technical team reviews all inquiries within one business day.
         </p>
 
         <div className="mt-8 pt-6 border-t border-brand/20 flex items-center justify-between font-mono text-xs text-brand-dark">
           <span>REF: EST-{Math.floor(1000 + Math.random() * 9000)}</span>
-          <span>STUDIO HOURS: 08:00 – 18:00 EST</span>
+          <span>ESTIMATE WINDOW: 24 HOURS</span>
         </div>
       </div>
     )
@@ -65,55 +86,62 @@ export default function ContactForm() {
 
   return (
     <div className="mx-auto w-full max-w-2xl rounded-sm border border-line bg-canvas p-6 sm:p-10 shadow-sm font-body text-ink animate-fadeUp">
+      <Helmet>
+        <title>Request an Estimate & Submit RFPs | PaintByte Painting Contractors</title>
+        <meta name="description" content="Get a detailed estimate for residential, commercial, or government painting projects. Submit tender documents and RFPs directly to PaintByte." />
+        <script type="application/ld+json">
+          {JSON.stringify(contactSchema)}
+        </script>
+      </Helmet>
       
-      {/* Editorial Adage Header */}
       <header className="mb-8 border-b border-line pb-6">
         <div className="flex items-center justify-between gap-2 mb-2">
           <span className="font-mono text-[10px] uppercase tracking-wider text-stone">
-            ESTIMATE REQUEST
+            ESTIMATE & TENDER INQUIRIES
           </span>
         </div>
 
         <h2 className="font-display text-2xl sm:text-3xl font-normal tracking-tight text-ink">
-          Start the Conversation
+          Request an Estimate or Submit an RFP
         </h2>
 
         <p className="mt-2 font-display italic text-base text-brand-dark">
-          &ldquo;A pen is mightier than a sword.&rdquo;
+          &ldquo;Precision in planning, perfection in painting.&rdquo;
         </p>
         <p className="mt-1 font-body text-xs text-stone">
-          Tell us about your space, timing, and vision—we respond to inquiries within 24 hours.
+          Tell us about your residential house, commercial property, or public sector facility—we respond to all contract bids and estimate requests within 24 hours.
         </p>
       </header>
 
-      {/* Form Area */}
       <form onSubmit={onSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <label htmlFor="name" className="block font-mono text-xs uppercase tracking-widest text-stone">
-              Name <span className="text-coral">*</span>
+              Full Name / Company Name <span className="text-coral">*</span>
             </label>
             <input
               id="name"
               name="name"
               required
+              aria-required="true"
               value={form.name}
               onChange={onChange}
-              placeholder="e.g. Eleanor Vance"
+              placeholder="e.g. Eleanor Vance or Ministry Rep"
               className="mt-2 w-full border-b border-line bg-transparent py-2.5 font-body text-ink placeholder:text-stone/40 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/20 transition-colors"
             />
           </div>
 
           <div>
             <label htmlFor="phone" className="block font-mono text-xs uppercase tracking-widest text-stone">
-              Phone
+              Phone / WhatsApp
             </label>
             <input
               id="phone"
               name="phone"
+              type="tel"
               value={form.phone}
               onChange={onChange}
-              placeholder="+234 000 000 0000"
+              placeholder="+234 806 570 4348"
               className="mt-2 w-full border-b border-line bg-transparent py-2.5 font-body text-ink placeholder:text-stone/40 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/20 transition-colors"
             />
           </div>
@@ -121,23 +149,24 @@ export default function ContactForm() {
 
         <div>
           <label htmlFor="email" className="block font-mono text-xs uppercase tracking-widest text-stone">
-            Email <span className="text-coral">*</span>
+            Email Address <span className="text-coral">*</span>
           </label>
           <input
             id="email"
             name="email"
             type="email"
             required
+            aria-required="true"
             value={form.email}
             onChange={onChange}
-            placeholder="eleanor@gmail.com"
+            placeholder="eleanor@domain.com"
             className="mt-2 w-full border-b border-line bg-transparent py-2.5 font-body text-ink placeholder:text-stone/40 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/20 transition-colors"
           />
         </div>
 
         <div>
           <label htmlFor="serviceType" className="block font-mono text-xs uppercase tracking-widest text-stone">
-            Service Needed
+            Scope of Service <span className="text-coral">*</span>
           </label>
           <div className="relative">
             <select
@@ -147,10 +176,12 @@ export default function ContactForm() {
               onChange={onChange}
               className="mt-2 w-full appearance-none border-b border-line bg-transparent py-2.5 pr-8 font-body text-ink focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/20 transition-colors cursor-pointer"
             >
-              <option value="Interior" className="bg-canvas text-ink">Interior Design & Painting</option>
-              <option value="Exterior" className="bg-canvas text-ink">Exterior Restoration</option>
-              <option value="Commercial" className="bg-canvas text-ink">Commercial Property</option>
-              <option value="Color consultation" className="bg-canvas text-ink">Color & Material Consultation</option>
+              <option value="Interior" className="bg-canvas text-ink">Residential Interior Painting</option>
+              <option value="Exterior" className="bg-canvas text-ink">Residential Exterior Refinishing</option>
+              <option value="Commercial" className="bg-canvas text-ink">Commercial Office & Real Estate</option>
+              <option value="Government" className="bg-canvas text-ink">Government Facility Maintenance / Tender</option>
+              <option value="Industrial" className="bg-canvas text-ink">Industrial Epoxy & Protective Coatings</option>
+              <option value="Consultation" className="bg-canvas text-ink">Color & Material Consultation</option>
             </select>
             <div className="pointer-events-none absolute right-2 bottom-3 text-stone">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,16 +193,17 @@ export default function ContactForm() {
 
         <div>
           <label htmlFor="message" className="block font-mono text-xs uppercase tracking-widest text-stone">
-            Tell us about the space <span className="text-coral">*</span>
+            Project Scope & Specifications <span className="text-coral">*</span>
           </label>
           <textarea
             id="message"
             name="message"
             rows={4}
             required
+            aria-required="true"
             value={form.message}
             onChange={onChange}
-            placeholder="Dimensions, current condition, architectural era, desired timeline..."
+            placeholder="Provide details: estimated square footage, current wall condition, required site location, timeline, or tender specs..."
             className="mt-2 w-full border-b border-line bg-transparent py-2.5 font-body text-ink placeholder:text-stone/40 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/20 transition-colors resize-none"
           />
         </div>
@@ -181,7 +213,7 @@ export default function ContactForm() {
             <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>Something went wrong sending your message. Please try again, or call us directly.</span>
+            <span>Something went wrong sending your message. Please try again or call us directly at +234 806 570 4348.</span>
           </div>
         )}
 
@@ -197,15 +229,15 @@ export default function ContactForm() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                <span>Sending Message…</span>
+                <span>Submitting Request…</span>
               </span>
             ) : (
-              <span>Send Message</span>
+              <span>Request Estimate / Submit RFP</span>
             )}
           </button>
 
           <span className="font-mono text-[10px] text-stone uppercase tracking-wider">
-            Protected by SSL Encryption
+            256-Bit SSL Encrypted & Confidential
           </span>
         </div>
       </form>

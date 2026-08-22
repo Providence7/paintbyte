@@ -15,9 +15,9 @@
       name="keywords" 
       content="painter in nigeria, house painter lagos, painter ibadan, professional painters nigeria, 3d paint visualizer, berger paint colors, dulux nigeria paint codes, residential painting nigeria, Paintbyte" 
     />
-    <meta name="author" content="Paintbyte" />
+    <meta name="author" content="Paintbyte Enterprise" />
     <meta name="geo.region" content="NG" />
-    <meta name="geo.placename" content="Nigeria" />
+    <meta name="geo.placename" content="Ibadan, Nigeria" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
     <!-- Canonical URL -->
@@ -57,61 +57,82 @@
       rel="stylesheet" 
     />
 
-    <!-- Local Business Schema (Optimized for Nigeria & AI Discovery) -->
+    <!-- Unified Structured Schema Data (LocalBusiness & PaintingContractor) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "HousePainter",
-      "name": "Paintbyte",
-      "image": "https://www.paintbyte.com.ng/og-image.jpg",
-      "@id": "https://www.paintbyte.com.ng/#organization",
-      "url": "https://www.paintbyte.com.ng",
-      "telephone": "+2348000000000",
-      "priceRange": "₦₦",
-      "description": "Professional residential, commercial, and industrial painting services across Nigeria with interactive 3D paint color visualization.",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "NG"
-      },
-      "areaServed": [
+      "@graph": [
         {
-          "@type": "Country",
-          "name": "Nigeria"
-        }
-      ],
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ],
-        "opens": "08:00",
-        "closes": "18:00"
-      },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Painting Services",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Residential & Commercial Painting in Nigeria"
-            }
+          "@type": "PaintingContractor",
+          "@id": "https://www.paintbyte.com.ng/#organization",
+          "name": "Paintbyte",
+          "legalName": "Paintbyte Enterprise",
+          "url": "https://www.paintbyte.com.ng",
+          "image": "https://www.paintbyte.com.ng/og-image.jpg",
+          "telephone": "+2348065704348",
+          "priceRange": "₦₦",
+          "description": "Licensed residential, commercial, and government painting contractor specializing in surface preparation, structural refinishing, industrial epoxy, and interactive 3D paint color visualization.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Ibadan",
+            "addressRegion": "Oyo State",
+            "addressCountry": "NG"
           },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Interactive 3D Wall Color Visualizer"
-            }
+          "areaServed": [
+            { "@type": "AdministrativeArea", "name": "Oyo State" },
+            { "@type": "AdministrativeArea", "name": "Lagos State" },
+            { "@type": "AdministrativeArea", "name": "Federal Capital Territory" },
+            { "@type": "Country", "name": "Nigeria" }
+          ],
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday"
+            ],
+            "opens": "08:00",
+            "closes": "18:00"
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Commercial, Residential & Institutional Painting Services",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Residential & Commercial Building Painting"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Interactive 3D Wall Color Visualizer"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Industrial Epoxy & Protective Surface Coatings"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Government Facility Maintenance & Refinishing"
+                }
+              }
+            ]
           }
-        ]
-      }
+        }
+      ]
     }
     </script>
   </head>
