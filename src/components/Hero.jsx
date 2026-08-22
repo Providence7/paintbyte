@@ -3,28 +3,28 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 
 export default function Hero({ projectCount }) {
-  // Background images array with your new WebP image added
+  // Background images array with your crew image as the first slide
   const slides = [
     {
-      url: 'https://images.unsplash.com/photo-1742900280861-32bed068938b?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0',
-      alt: 'Master painter applying precision surface coating',
-      badge: '3D Color Matching'
+      url: 'Painters_walking_toward_unfinish…_2K_202608212139.jpeg',
+      alt: 'PaintByte crew walking toward residential painting site',
+      badge: 'Professional Crew'
     },
     {
-      url: 'https://www.housepaintersuniversityheightsoh.com/images/painting/services/exterior-house-painting/house-painting-progress.webp',
-      alt: 'Exterior house painting project in progress',
+      url: 'https://pub-9fc1f065f07e441b8f35365c774f09ae.r2.dev/uploads/sites/1/Living-room-in-renovation-progress.png',
+      alt: 'Living room interior painting and renovation',
+      badge: 'Interior Refinishing'
+    },
+    {
+      url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRrJu8J-0pWuS_k_wbE7E8ONLrzXr1pA2SVvhUyZERGFhJCrs-JreAPS8&s=10',
+      alt: 'Professional painting surface preparation',
       badge: 'Precision Execution'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1523198780259-41f275ab6e3d?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0',
-      alt: 'Surface preparation materials and finish palette',
-      badge: 'Premium Paint Specs'
     }
   ]
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  // Sped up rotation: auto-advance every 3.5 seconds
+  // Auto-advance every 3.5 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length)
@@ -45,7 +45,6 @@ export default function Hero({ projectCount }) {
             initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            /* Snappier 0.5s fade transition */
             transition={{ duration: 0.5, ease: 'easeInOut' }}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
@@ -86,7 +85,9 @@ export default function Hero({ projectCount }) {
 
             {/* Narrative */}
             <p className="font-body text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl">
-              High-quality paint, seamless execution, and zero mess. We give your home or office the flawless, professional look it deserves.
+              Seamless execution, and zero mess, We give your home or office the flawless,
+              professional look it deserves. From detailed surface preparation to clean, 
+              durable coats.
             </p>
 
             {/* Action Buttons */}
