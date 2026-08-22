@@ -10,6 +10,8 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState('projects')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [lightboxImage, setLightboxImage] = useState(null)
+  const [selectedMessage, setSelectedMessage] = useState(null)
 
   const authHeader = useMemo(() => ({
     headers: { Authorization: `Bearer ${token}` }
@@ -229,34 +231,50 @@ export default function AdminDashboard() {
           {/* Client Messages View */}
           {tab === 'messages' && (
             <div className="mt-6 divide-y divide-line/60 rounded-sm border border-line/60 bg-canvas">
-              {messages.map((msg) => (
-                <div key={msg._id} className="p-5 transition-colors hover:bg-brand-tint/20">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-display font-semibold text-ink text-base">
-                        {msg.name}
-                      </h3>
-                      <p className="mt-0.5 font-mono text-xs text-brand">
-                        {msg.serviceType || 'General Inquiry'} · {msg.email}{' '}
-                        {msg.phone ? `· ${msg.phone}` : ''}
-                      </p>
-                    </div>
-                    <span className="font-mono text-[11px] text-stone">
-                      {msg.createdAt
-                        ? new Date(msg.createdAt).toLocaleDateString(undefined, {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                          })
-                        : 'Recent'}
-                    </span>
-                  </div>
+              {messages.map((msg) => {
+                const hasAttachments = msg.images?.length > 0 || Boolean(msg.videoUrl)
 
-                  <div className="mt-3 rounded-sm bg-brand-tint/40 p-3 font-body text-sm leading-relaxed text-ink/90 border border-line/30">
-                    "{msg.message}"
+                return (
+                  <div
+                    key={msg._id}
+                    onClick={() => setSelectedMessage(msg)}
+                    className="cursor-pointer p-5 transition-colors hover:bg-brand-tint/20"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-display font-semibold text-ink text-base">
+                          {msg.name}
+                        </h3>
+                        <p className="mt-0.5 font-mono text-xs text-brand">
+                          {msg.serviceType || 'General Inquiry'} · {msg.email}{' '}
+                          {msg.phone ? `· ${msg.phone}` : ''}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {hasAttachments && (
+                          <span className="font-mono text-[10px] uppercase tracking-wider text-amber">
+                            📎 {msg.images?.length || 0}
+                            {msg.videoUrl ? ' + video' : ''}
+                          </span>
+                        )}
+                        <span className="font-mono text-[11px] text-stone">
+                          {msg.createdAt
+                            ? new Date(msg.createdAt).toLocaleDateString(undefined, {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })
+                            : 'Recent'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 rounded-sm bg-brand-tint/40 p-3 font-body text-sm leading-relaxed text-ink/90 border border-line/30 line-clamp-2">
+                      "{msg.message}"
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
 
               {messages.length === 0 && (
                 <div className="p-12 text-center font-body text-sm text-stone">
@@ -266,6 +284,126 @@ export default function AdminDashboard() {
             </div>
           )}
         </>
+      )}
+
+      {/* Message Detail Modal */}
+      {selectedMessage && (
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4 sm:p-8"
+          onClick={() => setSelectedMessage(null)}
+        >
+          <div
+            className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-sm border border-line bg-canvas p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between border-b border-line pb-4">
+              <div>
+                <h3 className="font-display text-xl font-semibold text-ink">
+                  {selectedMessage.name}
+                </h3>
+                <p className="mt-1 font-mono text-xs text-brand">
+                  {selectedMessage.serviceType || 'General Inquiry'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedMessage(null)}
+                className="font-mono text-xs uppercase tracking-widest text-stone hover:text-ink"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-1 font-mono text-xs text-stone">
+              <p>Email: <span className="text-ink">{selectedMessage.email}</span></p>
+              {selectedMessage.phone && (
+                <p>Phone: <span className="text-ink">{selectedMessage.phone}</span></p>
+              )}
+              <p>
+                Received:{' '}
+                <span className="text-ink">
+                  {selectedMessage.createdAt
+                    ? new Date(selectedMessage.createdAt).toLocaleString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit'
+                      })
+                    : 'Recent'}
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-4 rounded-sm bg-brand-tint/40 p-4 font-body text-sm leading-relaxed text-ink/90 border border-line/30">
+              {selectedMessage.message}
+            </div>
+
+            {(selectedMessage.images?.length > 0 || selectedMessage.videoUrl) && (
+              <div className="mt-5">
+                <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-stone">
+                  Attachments
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {selectedMessage.images?.map((src, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setLightboxImage(src)}
+                      className="group relative block h-24 w-24 overflow-hidden rounded-sm border border-line focus:outline-none focus:ring-2 focus:ring-brand"
+                    >
+                      <img
+                        src={src}
+                        alt={`Attachment ${i + 1} from ${selectedMessage.name}`}
+                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                          e.currentTarget.nextSibling.style.display = 'flex'
+                        }}
+                      />
+                      <div
+                        style={{ display: 'none' }}
+                        className="absolute inset-0 flex items-center justify-center bg-red-50 font-mono text-[9px] text-red-600 text-center p-1"
+                      >
+                        Image failed to load
+                      </div>
+                    </button>
+                  ))}
+
+                  {selectedMessage.videoUrl && (
+                    <video
+                      src={selectedMessage.videoUrl}
+                      controls
+                      className="h-24 rounded-sm border border-line bg-black"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Image Lightbox */}
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-6"
+          onClick={() => setLightboxImage(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-6 right-6 font-mono text-xs uppercase tracking-widest text-white/80 hover:text-white"
+          >
+            ✕ Close
+          </button>
+          <img
+            src={lightboxImage}
+            alt="Attachment preview"
+            className="max-h-[85vh] max-w-full rounded-sm object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
       )}
     </section>
   )

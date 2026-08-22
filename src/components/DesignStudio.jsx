@@ -115,6 +115,41 @@ const ALL_COLORS = PAINT_CATALOG.flatMap((cat) =>
 );
 const COLOR_BY_CODE = new Map(ALL_COLORS.map((c) => [c.code, c]));
 
+// A small curated set spanning the catalog, shown as a starting point for clients
+// who don't know where to begin among 60+ swatches.
+const POPULAR_CODES = ['PB-W01', 'PB-C04', 'PB-G01', 'PB-PR03', 'PB-E03', 'PB-B05', 'PB-C06', 'PB-G04'];
+
+// Quick Start templates — drop a few pre-labeled, neutral-colored sections onto the
+// photo so a client isn't starting from a totally blank canvas. Positions are
+// percentages of the photo's natural size, so they scale to any uploaded image;
+// the client drags/resizes each one to actually match their photo.
+const ROOM_PRESETS = [
+  {
+    key: 'house_exterior',
+    label: 'House Exterior',
+    icon: '🏠',
+    description: 'Front wall, roof, door & window trim — reposition and resize each to match your photo.',
+    shapes: [
+      { name: 'Front Wall', xPct: 0.08, yPct: 0.28, wPct: 0.84, hPct: 0.45 },
+      { name: 'Roof', xPct: 0.05, yPct: 0.05, wPct: 0.9, hPct: 0.2 },
+      { name: 'Door', xPct: 0.42, yPct: 0.58, wPct: 0.14, hPct: 0.3 },
+      { name: 'Window Trim', xPct: 0.15, yPct: 0.35, wPct: 0.16, hPct: 0.18 },
+    ],
+  },
+  {
+    key: 'room_interior',
+    label: 'Room Interior',
+    icon: '🛋️',
+    description: 'Main wall, feature wall, ceiling & trim — great for indoor rooms and living spaces.',
+    shapes: [
+      { name: 'Main Wall', xPct: 0.05, yPct: 0.15, wPct: 0.9, hPct: 0.55 },
+      { name: 'Feature Wall', xPct: 0.05, yPct: 0.15, wPct: 0.3, hPct: 0.55 },
+      { name: 'Ceiling', xPct: 0.05, yPct: 0.02, wPct: 0.9, hPct: 0.12 },
+      { name: 'Skirting / Trim', xPct: 0.05, yPct: 0.68, wPct: 0.9, hPct: 0.06 },
+    ],
+  },
+];
+
 let shapeCounter = 0;
 const nextShapeId = () => `shape_${Date.now()}_${shapeCounter++}`;
 let toastCounter = 0;
@@ -273,7 +308,7 @@ function Modal({ title, onClose, children, wide }) {
 }
 
 /* ============================================================
-   COLOR PICKER PANEL — now with search, recents & favorites
+   COLOR PICKER PANEL — search, recents & favorites
    ============================================================ */
 function ColorPickerPanel({ onPick, onCancel, confirmLabel, recentColors, favoriteCodes, onToggleFavorite }) {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -283,6 +318,11 @@ function ColorPickerPanel({ onPick, onCancel, confirmLabel, recentColors, favori
   const favoriteColors = useMemo(
     () => favoriteCodes.map((code) => COLOR_BY_CODE.get(code)).filter(Boolean),
     [favoriteCodes]
+  );
+
+  const popularColors = useMemo(
+    () => POPULAR_CODES.map((code) => COLOR_BY_CODE.get(code)).filter(Boolean),
+    []
   );
 
   const visibleColors = useMemo(() => {
@@ -335,6 +375,13 @@ function ColorPickerPanel({ onPick, onCancel, confirmLabel, recentColors, favori
         aria-label="Search paint colors"
         className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-[11px] text-white focus:outline-none focus:border-emerald-500"
       />
+
+      {!query && popularColors.length > 0 && (
+        <div>
+          <span className="text-[9px] uppercase tracking-wide text-slate-500 font-bold">Popular Choices</span>
+          <div className="grid grid-cols-4 gap-2 mt-1">{popularColors.map((c) => renderSwatch(c))}</div>
+        </div>
+      )}
 
       {!query && favoriteColors.length > 0 && (
         <div>
@@ -471,6 +518,9 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   const [confirmState, setConfirmState] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showProjects, setShowProjects] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showPresets, setShowPresets] = useState(false);
+  const [guideDismissed, setGuideDismissed] = useState(false);
 
   const selectedShape = shapes.find((s) => s.id === selectedShapeId) || null;
 
@@ -487,24 +537,36 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   useEffect(() => {
     (async () => {
       try {
-        const res = await window.storage.get(STORAGE_KEYS.recentColors, false);
+        const res = await window.storage?.get(STORAGE_KEYS.recentColors, false);
         if (res) setRecentColors(JSON.parse(res.value));
       } catch { /* no recents saved yet */ }
       try {
-        const res = await window.storage.get(STORAGE_KEYS.favoriteColors, false);
+        const res = await window.storage?.get(STORAGE_KEYS.favoriteColors, false);
         if (res) setFavoriteCodes(JSON.parse(res.value));
       } catch { /* no favorites saved yet */ }
       try {
-        const res = await window.storage.get(STORAGE_KEYS.projectIndex, false);
+        const res = await window.storage?.get(STORAGE_KEYS.projectIndex, false);
         if (res) setSavedProjects(JSON.parse(res.value));
       } catch { /* no saved projects yet */ }
     })();
   }, []);
 
-  const rememberColor = useCallback(async (swatch) => {
+  /* IMPORTANT: state updater functions passed to setState must stay pure.
+     Calling window.storage.set(...) *inside* an updater is what was causing
+     the screen to blink on every color pick — React can invoke an updater
+     more than once for a single update, and if window.storage briefly
+     wasn't ready, the synchronous throw crashed the render and forced a
+     remount (the "blink"). Fix: compute the next value, hand it to
+     setState as a plain value, then do the storage write as a separate,
+     safely-guarded side effect afterward. */
+  const rememberColor = useCallback((swatch) => {
     setRecentColors((prev) => {
       const next = [swatch, ...prev.filter((c) => !(c.hex === swatch.hex && c.code === swatch.code))].slice(0, 8);
-      window.storage.set(STORAGE_KEYS.recentColors, JSON.stringify(next), false).catch(() => {});
+      queueMicrotask(() => {
+        try {
+          window.storage?.set(STORAGE_KEYS.recentColors, JSON.stringify(next), false)?.catch(() => {});
+        } catch { /* storage unavailable — recent colors just won't persist this session */ }
+      });
       return next;
     });
   }, []);
@@ -512,7 +574,11 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   const toggleFavoriteColor = useCallback((code) => {
     setFavoriteCodes((prev) => {
       const next = prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code];
-      window.storage.set(STORAGE_KEYS.favoriteColors, JSON.stringify(next), false).catch(() => {});
+      queueMicrotask(() => {
+        try {
+          window.storage?.set(STORAGE_KEYS.favoriteColors, JSON.stringify(next), false)?.catch(() => {});
+        } catch { /* storage unavailable — favorites just won't persist this session */ }
+      });
       return next;
     });
   }, []);
@@ -596,6 +662,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
         setCompareReveal(100);
         setCurrentProjectId(null);
         setCurrentProjectName('');
+        setGuideDismissed(false);
         resetHistory([]);
         setImageLoading(false);
       };
@@ -646,6 +713,29 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
 
   const cancelPlacing = () => setMode('idle');
 
+  const addPreset = (presetKey) => {
+    const preset = ROOM_PRESETS.find((p) => p.key === presetKey);
+    if (!preset) return;
+    const placeholder = COLOR_BY_CODE.get('PB-G01'); // neutral grey — signals "not yet chosen"
+    const newShapes = preset.shapes.map((s) => ({
+      id: nextShapeId(),
+      name: s.name,
+      x: s.xPct * naturalSize.w,
+      y: s.yPct * naturalSize.h,
+      width: s.wPct * naturalSize.w,
+      height: s.hPct * naturalSize.h,
+      isSquare: false,
+      hex: placeholder.hex,
+      colorName: placeholder.name,
+      code: placeholder.code,
+    }));
+    commitShapes((prev) => [...prev, ...newShapes]);
+    setShowPresets(false);
+    setGuideDismissed(true);
+    setSelectedShapeId(null);
+    pushToast('success', `Added the "${preset.label}" template — drag each shape to fit your photo, then tap it to pick a real color.`);
+  };
+
   const handleBackgroundClick = (e) => {
     if (mode === 'placing-rect' || mode === 'placing-square') {
       const point = clientToImageCoords(e.clientX, e.clientY);
@@ -663,6 +753,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   };
 
   const confirmNewShapeColor = (swatch) => {
+    const isFirstShape = shapes.length === 0;
     const newShape = {
       id: nextShapeId(),
       name: pendingShapeName.trim() || `Section ${shapes.length + 1}`,
@@ -676,6 +767,10 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
     setPendingShape(null);
     setMode('idle');
     setSelectedShapeId(newShape.id);
+    setGuideDismissed(true);
+    if (isFirstShape) {
+      pushToast('success', 'Nice! Add as many sections as your space needs — walls, doors, roof, and trim can all be different colors.');
+    }
   };
 
   const cancelNewShapeColor = () => {
@@ -967,7 +1062,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
 
   /* ---------- Saved projects ---------- */
   const persistProjectIndex = async (index) => {
-    await window.storage.set(STORAGE_KEYS.projectIndex, JSON.stringify(index), false);
+    await window.storage?.set(STORAGE_KEYS.projectIndex, JSON.stringify(index), false);
     setSavedProjects(index);
   };
 
@@ -992,7 +1087,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
         pricePerLitre,
         imageDataUrl: imageFits ? imageSrc : null,
       };
-      await window.storage.set(STORAGE_KEYS.project(id), JSON.stringify(payload), false);
+      await window.storage?.set(STORAGE_KEYS.project(id), JSON.stringify(payload), false);
       const nextIndex = [
         { id, name: trimmed, savedAt: payload.savedAt, hasImage: !!imageFits },
         ...savedProjects.filter((p) => p.id !== id),
@@ -1012,7 +1107,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   const handleLoadProject = async (id) => {
     setBusy('loading');
     try {
-      const res = await window.storage.get(STORAGE_KEYS.project(id), false);
+      const res = await window.storage?.get(STORAGE_KEYS.project(id), false);
       if (!res) throw new Error('missing');
       const data = JSON.parse(res.value);
       setNaturalSize(data.naturalSize);
@@ -1026,6 +1121,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
       setSelectedShapeId(null);
       setCompareReveal(100);
       setZoom(1);
+      setGuideDismissed((data.shapes || []).length > 0);
       if (data.imageDataUrl) {
         setImageSrc(data.imageDataUrl);
         pushToast('success', `Loaded “${data.name}”.`);
@@ -1044,7 +1140,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   const requestDeleteProject = (id, name) => {
     askConfirm(`Delete the saved design “${name}”? This cannot be undone.`, async () => {
       try {
-        await window.storage.delete(STORAGE_KEYS.project(id), false);
+        await window.storage?.delete(STORAGE_KEYS.project(id), false);
         await persistProjectIndex(savedProjects.filter((p) => p.id !== id));
         if (currentProjectId === id) setCurrentProjectId(null);
         pushToast('info', 'Design deleted.');
@@ -1059,6 +1155,7 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   const frameHeight = frameWidth * (naturalSize.h / naturalSize.w);
   const handleSize = naturalSize.w * 0.012;
   const canExport = shapes.length > 0 && !busy;
+  const showGuideBanner = imageSrc && shapes.length === 0 && mode === 'idle' && !guideDismissed;
 
   return (
     <div className="relative w-full max-w-6xl mx-auto bg-slate-900 text-white rounded-3xl shadow-2xl overflow-hidden font-sans border border-slate-800">
@@ -1077,30 +1174,38 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
             </p>
           )}
         </div>
-        {imageSrc && (
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => setShowProjects(true)}
-              className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
-            >
-              My Designs
-            </button>
-            <button
-              onClick={() => setShowSettings(true)}
-              className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
-              aria-label="Estimate settings"
-            >
-              ⚙ Settings
-            </button>
-            <button
-              onClick={handleSendToWhatsApp}
-              disabled={shapes.length === 0}
-              className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-800 disabled:text-slate-500 text-slate-950 font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
-            >
-              Send to WhatsApp
-            </button>
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setShowHelp(true)}
+            className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          >
+            How It Works
+          </button>
+          {imageSrc && (
+            <>
+              <button
+                onClick={() => setShowProjects(true)}
+                className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              >
+                My Designs
+              </button>
+              <button
+                onClick={() => setShowSettings(true)}
+                className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                aria-label="Estimate settings"
+              >
+                ⚙ Settings
+              </button>
+              <button
+                onClick={handleSendToWhatsApp}
+                disabled={shapes.length === 0}
+                className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-800 disabled:text-slate-500 text-slate-950 font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
+              >
+                Send to WhatsApp
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Empty state — upload */}
@@ -1132,14 +1237,23 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
             )}
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileInputChange} className="hidden" />
           </div>
-          {savedProjects.length > 0 && (
+
+          <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setShowProjects(true)}
-              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              onClick={() => setShowHelp(true)}
+              className="flex-1 min-w-[180px] py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
             >
-              Or open a saved design ({savedProjects.length})
+              New here? See how it works
             </button>
-          )}
+            {savedProjects.length > 0 && (
+              <button
+                onClick={() => setShowProjects(true)}
+                className="flex-1 min-w-[180px] py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              >
+                Or open a saved design ({savedProjects.length})
+              </button>
+            )}
+          </div>
         </div>
       )}
 
@@ -1148,6 +1262,27 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
         <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left: canvas */}
           <div className="lg:col-span-8 flex flex-col space-y-4">
+            {/* Guide banner — nudges a first-time client toward their first action */}
+            {showGuideBanner && (
+              <div className="flex items-start gap-3 bg-emerald-500/10 border border-emerald-700/50 rounded-xl px-4 py-3">
+                <span className="text-lg leading-none">👋</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-emerald-300">Let's get your first section colored</p>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    Use <strong>Quick Start</strong> to drop a ready-made template on your photo, or draw your own with{' '}
+                    <strong>+ Rectangle</strong> / <strong>+ Square</strong> below.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setGuideDismissed(true)}
+                  aria-label="Dismiss guide"
+                  className="text-slate-400 hover:text-white text-sm leading-none shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
             {/* Toolbar */}
             <div className="flex flex-wrap items-center gap-2">
               {mode === 'idle' && (
@@ -1163,6 +1298,13 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
                     className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-300"
                   >
                     <span className="inline-block w-2.5 h-2.5 border-2 border-slate-950" /> + Square
+                  </button>
+                  <button
+                    onClick={() => setShowPresets(true)}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    title="Drop a ready-made set of sections onto your photo"
+                  >
+                    ✨ Quick Start
                   </button>
                   <button
                     onClick={undo}
@@ -1520,6 +1662,84 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
             )}
           </div>
         </div>
+      )}
+
+      {/* Quick Start templates modal */}
+      {showPresets && (
+        <Modal title="Quick Start Templates" onClose={() => setShowPresets(false)} wide>
+          <div className="space-y-3">
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Drop a ready-made set of sections onto your photo, each in a neutral placeholder grey. Drag and resize every
+              shape to fit your actual photo, then tap each one to choose its real color.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {ROOM_PRESETS.map((preset) => (
+                <button
+                  key={preset.key}
+                  onClick={() => addPreset(preset.key)}
+                  className="text-left p-4 bg-slate-800/60 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                >
+                  <span className="text-2xl">{preset.icon}</span>
+                  <p className="text-sm font-bold text-white mt-2">{preset.label}</p>
+                  <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">{preset.description}</p>
+                  <span className="inline-block mt-3 text-[10px] font-bold text-emerald-400 uppercase tracking-wide">
+                    Use this template →
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* How It Works modal */}
+      {showHelp && (
+        <Modal title="How It Works" onClose={() => setShowHelp(false)}>
+          <ol className="space-y-4">
+            {[
+              {
+                title: 'Upload a photo',
+                body: 'Add a picture of the building, room, or shop front you want to see repainted.',
+              },
+              {
+                title: 'Drop shapes on it',
+                body: 'Use + Rectangle or + Square to mark a wall, door, roof, or trim — or use Quick Start for a ready-made set of sections.',
+              },
+              {
+                title: 'Fit each shape',
+                body: 'Drag inside a shape to move it, or drag its green handles to resize it until it matches your photo.',
+              },
+              {
+                title: 'Pick a color',
+                body: 'Tap any shape and choose from the paint catalog, your favorites, or mix a custom color.',
+              },
+              {
+                title: 'Compare & estimate',
+                body: 'Slide the before/after bar to preview your design, then set a real-world scale for an area and paint-cost estimate.',
+              },
+              {
+                title: 'Send it in',
+                body: 'Save your design, download a flattened PNG, print a quote, or send the whole scheme straight to WhatsApp for a quote.',
+              },
+            ].map((step, i) => (
+              <li key={step.title} className="flex gap-3">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-emerald-500 text-slate-950 font-black text-[11px] flex items-center justify-center">
+                  {i + 1}
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-white">{step.title}</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <button
+            onClick={() => setShowHelp(false)}
+            className="w-full mt-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-300"
+          >
+            Got it
+          </button>
+        </Modal>
       )}
 
       {/* Settings modal — coverage rate, price, real-world scale */}
