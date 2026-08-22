@@ -1,27 +1,29 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import crewImage from '../assest/img.jpeg' // Adjust relative path as needed
+import crewImage1 from '../assest/img1.jpeg' // Adjust relative path as needed
+import crewImage2 from '../assest/img2.jpeg' // Adjust relative path as needed
 
 export default function Hero({ projectCount }) {
   // Background images array with your crew image as the first slide
-  const slides = [
-    {
-      url: 'Painters_walking_toward_unfinish…_2K_202608212139.jpeg',
+const slides = [
+   {
+      url: crewImage,
       alt: 'PaintByte crew walking toward residential painting site',
       badge: 'Professional Crew'
     },
     {
-      url: 'https://pub-9fc1f065f07e441b8f35365c774f09ae.r2.dev/uploads/sites/1/Living-room-in-renovation-progress.png',
-      alt: 'Living room interior painting and renovation',
-      badge: 'Interior Refinishing'
+      url: crewImage1,
+      alt: 'PaintByte crew walking toward residential painting site',
+      badge: 'Professional Crew'
     },
     {
-      url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRrJu8J-0pWuS_k_wbE7E8ONLrzXr1pA2SVvhUyZERGFhJCrs-JreAPS8&s=10',
-      alt: 'Professional painting surface preparation',
-      badge: 'Precision Execution'
+      url: crewImage2,
+      alt: 'PaintByte crew walking toward residential painting site',
+      badge: 'Professional Crew'
     }
   ]
-
   const [currentIndex, setCurrentIndex] = useState(0)
 
   // Auto-advance every 3.5 seconds
