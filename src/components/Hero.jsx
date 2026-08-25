@@ -94,7 +94,7 @@ export default function Hero({ projectCount }) {
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.05]" />
 
       {/* Main Content Container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:py-32 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 py-4 sm:py-8 lg:py-12 w-full">
         <div className="max-w-2xl">
           
           <motion.div
@@ -142,6 +142,8 @@ export default function Hero({ projectCount }) {
                 Request Quote
               </Link>
             </div>
+
+
 
           </motion.div>
         </div>
