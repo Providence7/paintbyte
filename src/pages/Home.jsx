@@ -94,7 +94,7 @@ export default function Home() {
                   to="/studio"
                   className="inline-flex items-center justify-center rounded bg-emerald-500 px-5 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-slate-950 transition-colors hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900"
                 >
-                  Launch 3D Studio ↗
+                  Design A apace  ↗
                 </Link>
                 <Link
                   to="/contact"
@@ -107,51 +107,7 @@ export default function Home() {
 
             {/* Right Interactive Preview Card */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-xl border border-slate-800 bg-slate-950 p-5 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-3 font-mono text-[11px]">
-                  <span className="font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    Live Spec Builder
-                  </span>
-                  <span className="rounded bg-slate-800 px-2 py-0.5 text-[9px] text-slate-400">
-                    3D Visualizer
-                  </span>
-                </div>
-
-                {/* Color Palette Spec Preview */}
-                <div className="space-y-2.5 font-mono text-xs">
-                  <div className="flex items-center justify-between rounded bg-slate-900/80 p-2 border border-slate-800">
-                    <span className="text-slate-400">Exterior Walls</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="h-3.5 w-3.5 rounded-full bg-slate-200 border border-slate-400" />
-                      <span className="text-slate-200 font-semibold text-[11px]">Sandstone White</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between rounded bg-slate-900/80 p-2 border border-slate-800">
-                    <span className="text-slate-400">Trim & Columns</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="h-3.5 w-3.5 rounded-full bg-amber-800 border border-amber-600" />
-                      <span className="text-slate-200 font-semibold text-[11px]">Terracotta Ochre</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between rounded bg-slate-900/80 p-2 border border-slate-800">
-                    <span className="text-slate-400">Roof Accent</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="h-3.5 w-3.5 rounded-full bg-slate-800 border border-slate-600" />
-                      <span className="text-slate-200 font-semibold text-[11px]">Charcoal Slate</span>
-                    </div>
-                  </div>
-                </div>
-
-                <Link
-                  to="/studio"
-                  className="block w-full text-center rounded bg-slate-900 py-2 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
-                >
-                  Customize Spec ↗
-                </Link>
-              </div>
+             
             </div>
 
           </div>

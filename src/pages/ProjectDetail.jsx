@@ -104,7 +104,23 @@ export default function ProjectDetail() {
           Drag the slider to compare before and after
         </div>
       </div>
-
+ {project.images?.length > 1 && (
+        <div className="mt-12 border-t border-line/60 pt-8">
+          <h2 className="font-mono text-xs font-semibold uppercase tracking-widest text-stone">
+            Additional gallery views
+          </h2>
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {project.images.map((img, i) => (
+              <img
+                key={i}
+                src={img}
+                alt={`${project.title} detailed shot ${i + 1}`}
+                className="aspect-square w-full rounded-sm border border-line/60 object-cover transition-transform hover:scale-[1.02]"
+              />
+            ))}
+          </div>
+        </div>
+      )}
       {project.description && (
         <div className="mt-10 border-t border-line/60 pt-8">
           <h2 className="font-mono text-xs font-semibold uppercase tracking-widest text-stone">
@@ -128,23 +144,7 @@ export default function ProjectDetail() {
         </div>
       )}
 
-      {project.images?.length > 1 && (
-        <div className="mt-12 border-t border-line/60 pt-8">
-          <h2 className="font-mono text-xs font-semibold uppercase tracking-widest text-stone">
-            Additional gallery views
-          </h2>
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
-            {project.images.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt={`${project.title} detailed shot ${i + 1}`}
-                className="aspect-square w-full rounded-sm border border-line/60 object-cover transition-transform hover:scale-[1.02]"
-              />
-            ))}
-          </div>
-        </div>
-      )}
+     
 
       <div className="mt-16 rounded-sm border border-line bg-brand-tint/30 p-8 text-center sm:p-10">
         <h3 className="font-display text-2xl font-normal">Have a similar job in mind?</h3>
