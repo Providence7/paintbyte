@@ -54,7 +54,7 @@ export default function Hero({ projectCount }) {
   }
 
   return (
-    <section className="relative min-h-[65vh] flex items-center overflow-hidden border-b border-white/10 bg-slate-950 text-white font-body">
+    <section className="relative min-h-[55vh] flex items-center overflow-hidden border-b border-white/10 bg-slate-950 text-white font-body">
       <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(heroSchema)}
@@ -106,7 +106,6 @@ export default function Hero({ projectCount }) {
             {/* Dynamic Slide Badge */}
             <div className="inline-flex items-center space-x-2 rounded-full bg-emerald-500/10 backdrop-blur-md px-3.5
              py-1.5 text-xs font-mono font-bold uppercase text-emerald-400 border border-emerald-500/20 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce" />
               <span>{slides[currentIndex].badge}</span>
             </div>
 
