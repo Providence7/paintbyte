@@ -45,55 +45,7 @@ export default function Home() {
         projectCount={projects.length}
       />
 
-      {/* Streamlined 3D Studio Banner */}
-      <section 
-        aria-labelledby="studio-banner-heading"
-        className="relative overflow-hidden border-b border-line bg-slate-900 py-10 text-white"
-      >
-        {/* Decorative Grid Backdrop */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#22c55e_1px,transparent_1px)] [background-size:24px_24px] opacity-10" />
-
-        <div className="relative mx-auto max-w-6xl px-6">
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-            
-            {/* Left Content Column */}
-            <div className="space-y-4 lg:col-span-7">
-              <div className="inline-flex items-center space-x-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-[11px] font-semibold text-emerald-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Zero Guesswork Experience</span>
-              </div>
-
-           
-
-          
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-3">
-                <Link
-                  to="/studio"
-                  className="inline-flex items-center justify-center rounded bg-emerald-500 px-5 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-slate-950 transition-colors hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900"
-                >
-                  Design A apace  ↗
-                </Link>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center rounded border border-slate-700 bg-slate-800/60 px-5 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-slate-200 transition-colors hover:border-slate-500 hover:bg-slate-800"
-                >
-                  Book Consultation
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Interactive Preview Card */}
-            <div className="lg:col-span-5">
-             
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Services Grid Section */}
+    
       <Services />
 
       {/* Recent Portfolio Section */}
