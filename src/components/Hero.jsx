@@ -104,8 +104,9 @@ export default function Hero({ projectCount }) {
             className="space-y-6"
           >
             {/* Dynamic Slide Badge */}
-            <div className="inline-flex items-center space-x-2 rounded-full bg-emerald-500/10 backdrop-blur-md px-3.5 py-1.5 text-xs font-mono font-bold uppercase text-emerald-400 border border-emerald-500/20 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="inline-flex items-center space-x-2 rounded-full bg-emerald-500/10 backdrop-blur-md px-3.5
+             py-1.5 text-xs font-mono font-bold uppercase text-emerald-400 border border-emerald-500/20 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce" />
               <span>{slides[currentIndex].badge}</span>
             </div>
 
