@@ -54,7 +54,7 @@ export default function Hero({ projectCount }) {
   }
 
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden border-b border-white/10 bg-slate-950 text-white font-body">
+    <section className="relative min-h-[65vh] flex items-center overflow-hidden border-b border-white/10 bg-slate-950 text-white font-body">
       <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(heroSchema)}
