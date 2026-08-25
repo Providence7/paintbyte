@@ -63,30 +63,9 @@ export default function Home() {
                 <span>Zero Guesswork Experience</span>
               </div>
 
-              <h2 id="studio-banner-heading" className="font-display text-2xl font-normal leading-tight tracking-tight sm:text-3xl text-white">
-                Not sure how colors will look?{' '}
-                <span className="italic text-emerald-400">Test them live.</span>
-              </h2>
+           
 
-              <p className="font-body text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
-                Mix and match authentic paint shades across walls, trims, and roofs on interactive 3D building models before buying paint.
-              </p>
-
-              {/* Compact Horizontal Feature Badges */}
-              <div className="flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[11px] text-slate-300 pt-1">
-                <span className="flex items-center space-x-1.5">
-                  <span className="text-emerald-400 font-bold">✓</span>
-                  <span>100% Free Tool</span>
-                </span>
-                <span className="flex items-center space-x-1.5">
-                  <span className="text-emerald-400 font-bold">✓</span>
-                  <span>Authentic Color Codes</span>
-                </span>
-                <span className="flex items-center space-x-1.5">
-                  <span className="text-emerald-400 font-bold">✓</span>
-                  <span>1-Click WhatsApp Quote</span>
-                </span>
-              </div>
+          
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-3">
