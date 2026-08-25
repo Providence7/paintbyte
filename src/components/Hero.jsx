@@ -143,29 +143,6 @@ export default function Hero({ projectCount }) {
               </Link>
             </div>
 
-            {/* Social Proof Trust Bar */}
-            <div className="pt-6 border-t border-white/15 flex flex-wrap items-center justify-between font-mono text-xs text-slate-400 gap-y-3">
-              <div className="flex items-center space-x-2">
-                <span className="text-amber-400 font-bold">★ 4.9/5</span>
-                <span>•</span>
-                <span><strong className="text-white font-bold">{projectCount || '100+'}</strong> Projects Completed</span>
-              </div>
-
-              {/* Slider Navigation Dots */}
-              <div className="flex items-center space-x-2">
-                {slides.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentIndex(idx)}
-                    aria-label={`Go to slide ${idx + 1}`}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      idx === currentIndex ? 'w-6 bg-emerald-400' : 'w-2 bg-white/30 hover:bg-white/60'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-
           </motion.div>
         </div>
       </div>
