@@ -46,7 +46,6 @@ export default function Home() {
       />
 
     
-      <Services />
 
       {/* Recent Portfolio Section */}
       <section className="border-b border-line bg-canvas py-16 font-body text-ink" aria-labelledby="portfolio-heading">
@@ -97,6 +96,7 @@ export default function Home() {
 
         </div>
       </section>
+      <Services />
 
       {/* Process & Methodology Section */}
       <Process />
