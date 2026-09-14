@@ -5,12 +5,8 @@ export default function BeforeAfterSlider({
   beforeImage = 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200',
   afterImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200',
   altText = 'Architectural Restoration',
-  title = 'The Living Room Transformation',
   adage = 'A picture is worth a thousand words.',
-  subtitle = 'From neglected mid-century heritage to restored craftsmanship.',
-  category = 'VOL. 01 — RESTORATION',
   compact = false,
-  projectType = 'Residential Interior Painting',
   location = 'Ibadan, Nigeria',
   keywords = 'surface preparation, living room repainting, wall refinishing'
 }) {
@@ -122,7 +118,7 @@ export default function BeforeAfterSlider({
         >
           <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
           <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-amber-300">
-            Before Prep
+            Before 
           </span>
         </div>
 
@@ -132,7 +128,7 @@ export default function BeforeAfterSlider({
         >
           <span className="h-2 w-2 rounded-full bg-emerald-400" />
           <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-emerald-300">
-            After PaintByte Finish
+            After 
           </span>
         </div>
       </div>
