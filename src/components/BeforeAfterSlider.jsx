@@ -5,8 +5,12 @@ export default function BeforeAfterSlider({
   beforeImage = 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200',
   afterImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200',
   altText = 'Architectural Restoration',
+  title = '',
   adage = 'A picture is worth a thousand words.',
+  subtitle = '',
+  category = '',
   compact = false,
+  projectType = '',
   location = 'Ibadan, Nigeria',
   keywords = 'surface preparation, living room repainting, wall refinishing'
 }) {
