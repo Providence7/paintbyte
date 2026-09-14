@@ -308,6 +308,43 @@ function Modal({ title, onClose, children, wide }) {
 }
 
 /* ============================================================
+   BETA NOTICE MODAL
+   Shown once on load, before the studio is usable, so clients
+   know this is a work-in-progress tool and set their expectations
+   accordingly (e.g. save often, report anything odd).
+   ============================================================ */
+function BetaNoticeModal({ onDismiss, businessName }) {
+  return (
+    <div className="absolute inset-0 z-[90] bg-black/70 flex items-center justify-center p-4 md:p-6" role="dialog" aria-modal="true" aria-label="Beta notice">
+      <div className="bg-slate-900 border border-emerald-700/50 rounded-2xl w-full max-w-md p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-600/40 text-emerald-400 text-[10px] font-extrabold uppercase tracking-widest">
+            Beta
+          </span>
+          <h3 className="text-sm font-bold text-white">Design Studio is still in beta</h3>
+        </div>
+        <p className="text-xs text-slate-300 leading-relaxed">
+          You're trying out an early version of the {businessName} Design Studio. It's fully usable, but we're
+          still actively improving it — some features may change, and you might run into the occasional rough
+          edge.
+        </p>
+        <ul className="text-[11px] text-slate-400 space-y-1.5 list-disc list-inside">
+          <li>Save your design often so you don't lose work.</li>
+          <li>Area and cost estimates are approximate, not final quotes.</li>
+          <li>Your feedback helps us make this better — let us know if something feels off.</li>
+        </ul>
+        <button
+          onClick={onDismiss}
+          className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-emerald-300"
+        >
+          Got it, let's start
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
    COLOR PICKER PANEL — search, recents & favorites
    ============================================================ */
 function ColorPickerPanel({ onPick, onCancel, confirmLabel, recentColors, favoriteCodes, onToggleFavorite }) {
@@ -521,6 +558,9 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
   const [showHelp, setShowHelp] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
   const [guideDismissed, setGuideDismissed] = useState(false);
+
+  // Beta notice — shown once when the studio first loads
+  const [showBetaNotice, setShowBetaNotice] = useState(true);
 
   const selectedShape = shapes.find((s) => s.id === selectedShapeId) || null;
 
@@ -1162,7 +1202,12 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
       {/* Header */}
       <div className="p-6 md:p-8 bg-slate-950 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase">PaintByte™ Interactive Studio</span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase">PaintByte™ Interactive Studio</span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-600/40 text-emerald-400 text-[9px] font-extrabold uppercase tracking-widest">
+              Beta
+            </span>
+          </div>
           <h2 className="text-2xl md:text-3xl font-black mt-1">Drop Shapes, Color & Preview</h2>
           <p className="text-xs text-slate-400 mt-1">
             Upload a photo, drop a rectangle or square on any section, drag its handles to fit, then paint it.
@@ -1837,6 +1882,10 @@ const DesignStudio3D = ({ phoneNumber = '2348000000000', businessName = 'PaintBy
             )}
           </div>
         </Modal>
+      )}
+
+      {showBetaNotice && (
+        <BetaNoticeModal businessName={businessName} onDismiss={() => setShowBetaNotice(false)} />
       )}
 
       <ConfirmDialog state={confirmState} onCancel={() => setConfirmState(null)} />
